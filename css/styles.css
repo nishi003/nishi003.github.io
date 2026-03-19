@@ -1,0 +1,141 @@
+:root {
+  --bg: #000000;
+  --border: #ffffff;
+  --hover-border: #faf9f6;
+  --inside: #ffffff4d;
+  --text: #faf9f6;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html,
+body {
+  background-color: var(--bg) !important;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+.background {
+  background-color: var(--bg) !important;
+}
+
+#map-container {
+  background-color: var(--bg);
+  width: 100%;
+  height: calc(100vh - 60px);
+}
+
+.criteria-panel {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 2px solid #e8dff4;
+  border-radius: 8px;
+  color: #f6ecff;
+  background: rgba(255, 255, 255, 0.03);
+  font-family: inherit;
+}
+
+.criteria-panel h2 {
+  margin-bottom: 1.5rem;
+}
+
+.criteria-group {
+  margin-bottom: 1.5rem;
+}
+
+.criteria-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.criteria-group input[type="range"] {
+  width: 100%;
+}
+
+.criteria-group div {
+  margin-bottom: 0.4rem;
+}
+
+.dual-slider {
+  position: relative;
+  height: 32px;
+  margin-top: 0.75rem;
+}
+
+.dual-slider-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.dual-slider-range {
+  position: absolute;
+  top: 50%;
+  height: 6px;
+  background: #c05dd9;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.dual-range {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  margin: 0;
+  transform: translateY(-50%);
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.dual-range::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+}
+
+.dual-range::-moz-range-track {
+  height: 6px;
+  background: transparent;
+}
+
+.dual-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #c05dd9;
+  border: none;
+  pointer-events: auto;
+  cursor: pointer;
+  margin-top: -5px;
+}
+
+.dual-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #c05dd9;
+  border: none;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+#criteria-container,
+#map-container,
+#best-neighbourhood-container {
+  min-width: 0;
+  height: 100%;
+}
