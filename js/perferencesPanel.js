@@ -5,7 +5,7 @@ const sections = [
         criteria: [
             {
                 label: "Maximum average rent (per month)",
-                tooltip: "Average monthly rent across 2 bedroom 2 bathroom units in the neighbourhood",
+                tooltip: "Based on average listed rents for 2bed/2bath units in the neighborhood.",
                 type: "max",
                 min: 0,
                 max: 10000,
@@ -21,7 +21,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum safety score",
-                tooltip: "Composite safety score based on crime data (0–100)",
+                tooltip: "Scored 0–100 using local crime statistics. A score of 50+ is considered average.",
                 type: "min",
                 min: 0,
                 max: 100,
@@ -37,7 +37,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum transit score",
-                tooltip: "Access to public transit options (0–100)",
+                tooltip: "Scored 0–100 based on proximity to buses, subways, and rail.",
                 type: "min",
                 min: 0,
                 max: 100,
@@ -53,7 +53,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum dining score",
-                tooltip: "Density and quality of restaurants and cafés (0–100)",
+                tooltip: "Scored 0–100 based on the density and variety of restaurants, cafés, and bars.",
                 type: "min",
                 min: 0,
                 max: 100,
@@ -69,7 +69,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum green space score",
-                tooltip: "Proximity and access to parks and outdoor areas (0–100)",
+                tooltip: "Scored 0–100 based on proximity to parks, trails, and recreational areas.",
                 type: "min",
                 min: 0,
                 max: 100,
@@ -81,13 +81,38 @@ const sections = [
     },
 ];
 
+function createTooltip() {
+    const tip = document.createElement("div");
+    tip.id = "tooltip";
+    tip.style.cssText = `
+    position: fixed;
+    background: white;
+    color: black;
+    font-size: 12px;
+    font-family: 'Mulish', sans-serif;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    width: 200px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 9999;
+  `;
+    document.body.appendChild(tip);
+    return tip;
+}
+
+const tooltip = createTooltip();
+
 function buildPanel(containerId, sections) {
     const container = document.getElementById(containerId);
 
     // Header
     const header = document.createElement("div");
     header.id = "preferences-header"
-    header.classList.add("flex", "flex-col", "gap-[12px]", "w-[300px]")
+    header.classList.add("flex", "flex-col", "gap-[8px]", "w-[300px]")
     header.innerHTML = `
     <p class="text-2xl font-semibold font-roboto text-white leading-7">Neighborhood Preferences</p>
     <p class="text-xs font-medium font-mulish text-subtitle">Refine your criteria to discover neighborhoods<br>tailored to your lifestyle.</p>
@@ -97,11 +122,11 @@ function buildPanel(containerId, sections) {
     // Categories
     const categories = document.createElement("div");
     categories.id = "preferences-categories"
-    categories.classList.add("flex", "flex-col", "overflow-y-auto", "overflow-x-hidden", "w-[300px]");
+    categories.classList.add("flex", "flex-col", "overflow-y-auto", "overflow-visible", "w-[300px]");
 
     sections.forEach((section) => {
         const sec = document.createElement("div");
-        sec.classList.add("section", "flex", "flex-col", "py-[16px]");
+        sec.classList.add("section", "flex", "flex-col", "py-[16px]", "collapsed");
         sec.style.borderTop = "1px solid #2a2a2a";
         sec.dataset.id = section.id;
 
@@ -132,6 +157,21 @@ function buildPanel(containerId, sections) {
             <p class="text-xs font-medium font-mulish text-subtitle">${c.label}</p>
             <i class="uil uil-info-circle text-[18px] text-subtitle cursor-help tooltip-icon" data-tip="${c.tooltip}"></i>
             `;
+
+            const icon = labelRow.querySelector(".tooltip-icon");
+            icon.addEventListener("mouseenter", () => {
+                if (sec.classList.contains("collapsed")) return;
+                tooltip.textContent = c.tooltip;
+                tooltip.style.opacity = "1";
+            });
+            icon.addEventListener("mousemove", (e) => {
+                if (sec.classList.contains("collapsed")) return;
+                tooltip.style.left = e.clientX - 80 + "px";
+                tooltip.style.top = e.clientY - tooltip.offsetHeight - 12 + "px";
+            });
+            icon.addEventListener("mouseleave", () => {
+                tooltip.style.opacity = "0";
+            });
 
             // Slider
             const sliderRow = document.createElement("div");
@@ -203,6 +243,12 @@ function buildPanel(containerId, sections) {
     });
 
     container.appendChild(categories);
+}
+
+function resetToDefaults(section) {
+    section.querySelectorAll("input, select, textarea").forEach(el => {
+        el.value = el.defaultValue;
+    });
 }
 
 buildPanel("preferences-panel", sections);

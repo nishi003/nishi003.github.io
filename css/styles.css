@@ -74,7 +74,7 @@ h6 {
 }
 
 .section-body {
-  overflow: hidden;
+  overflow: visible;
   max-height: 300px;
   padding-top: 12px;
   transition:
@@ -89,20 +89,9 @@ h6 {
   opacity: 0;
   padding-top: 0;
 }
-.tooltip-icon:hover::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: #111;
-  border: 1px solid #333;
-  color: #faf9f6;
-  font-size: 0.75rem;
-  padding: 0.35rem 0.6rem;
-  border-radius: 6px;
-  white-space: nowrap;
-  z-index: 10;
+
+.section.collapsed .tooltip-icon {
+  cursor: default;
   pointer-events: none;
 }
 
@@ -110,7 +99,7 @@ input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  height: 8px; /* or whatever track height you want */
+  height: 8px;
   width: 100%;
 }
 
