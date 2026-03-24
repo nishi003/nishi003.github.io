@@ -5,7 +5,7 @@ const sections = [
         criteria: [
             {
                 label: "Maximum average rent (per month)",
-                tooltip: "Average monthly rent across all unit types in the neighbourhood",
+                tooltip: "Average monthly rent across 2 bedroom 2 bathroom units in the neighbourhood",
                 type: "max",
                 min: 500,
                 max: 10000,
@@ -85,12 +85,12 @@ function buildPanel(containerId, sections) {
     const container = document.getElementById(containerId);
 
     const panel = document.createElement("div");
-    panel.className = "preferences-panel";
+    panel.classList.add("preferences-panel", "bg-panel", "rounded-[20px]", "w-fit", "h-fit", "max-h-full", "flex", "flex-col", "p-[28px]", "gap-[24px]", "overflow-hidden");
 
     // Header
     const header = document.createElement("div");
     header.id = "preferences-header"
-    header.classList.add("flex", "flex-col", "gap-2", "w-[300px]")
+    header.classList.add("flex", "flex-col", "gap-2", "w-full")
     header.innerHTML = `
     <p class="text-2xl font-semibold font-roboto text-white">Neighborhood Preferences</p>
     <p class="text-xs font-medium font-mulish text-subtitle">Refine your criteria to discover neighborhoods<br>tailored to your lifestyle.</p>
@@ -100,49 +100,48 @@ function buildPanel(containerId, sections) {
     // Categories
     const categories = document.createElement("div");
     categories.id = "preferences-categories"
-    categories.classList.add("flex", "flex-col");
+    categories.classList.add("flex", "flex-col", "overflow-y-auto", "overflow-x-hidden", "w-[300px]");
 
     sections.forEach((section) => {
         const sec = document.createElement("div");
-        sec.classList.add("section", "flex", "flex-row", "px-4")
-        sec.className = "section";
+        sec.classList.add("section", "flex", "flex-col", "py-[16px]");
+        sec.style.borderTop = "1px solid #2a2a2a";
         sec.dataset.id = section.id;
 
         // Header row
         const headerRow = document.createElement("div");
-        headerRow.classList.add("section-header", "flex", "flex-row", "justify-between");
+        headerRow.classList.add("section-header", "flex", "flex-row", "justify-between", "cursor-pointer");
         headerRow.innerHTML = `
-        <p class="section-title text-base font-semibold font-mulish text-white">${section.title}</p>
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <p class="section-title text-base font-semibold font-mulish text-white leading-5">${section.title}</p>
+        <svg class="chevron w-[20px] h-[20px] background-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"/>
         </svg>
         `;
-
         headerRow.addEventListener("click", () => {
             sec.classList.toggle("collapsed");
         });
 
         // Body
         const body = document.createElement("div");
-        body.className = "section-body";
+        body.classList.add("section-body", "flex", "flex-col", "gap-[6px]");
 
         section.criteria.forEach((c) => {
             let currentVal = c.defaultVal;
 
             // Label + tooltip
             const labelRow = document.createElement("div");
-            labelRow.className = "criteria-label";
-            labelRow.style.paddingTop = "12px";
+            labelRow.classList.add("criteria-label", "h-[20px]", "flex", "items-center", "gap-[4px]");
             labelRow.innerHTML = `
-            <p class="text-sm font-medium font-mulish text-subtitle">${c.label}</p>
-            <p class="tooltip-icon" data-tip="${c.tooltip}">?</p>
+            <p class="text-xs font-medium font-mulish text-subtitle">${c.label}</p>
+            <i class="uil uil-info-circle text-[18px] text-subtitle cursor-help tooltip-icon" data-tip="${c.tooltip}"></i>
             `;
 
             // Slider
             const sliderRow = document.createElement("div");
-            sliderRow.className = "slider-row";
+            sliderRow.classList.add("slider-row", "flex", "items-center");
 
             const slider = document.createElement("input");
+            slider.classList.add("range", "h-[8px]", "w-full", "bg-black", "rounded-full");
             slider.type = "range";
             slider.min = c.min;
             slider.max = c.max;
@@ -151,21 +150,27 @@ function buildPanel(containerId, sections) {
 
             function updateFill() {
                 const pct = ((slider.value - c.min) / (c.max - c.min)) * 100;
-                slider.style.background = `linear-gradient(to right, #fff ${pct}%, #333 ${pct}%)`;
+                if (c.type === "max") {
+                    slider.style.background = `linear-gradient(to right, #ffffff ${pct}%, #333333 ${pct}%)`;
+                } else {
+                    slider.style.background = `linear-gradient(to right, #333333 ${pct}%, #ffffff ${pct}%)`;
+                }
             }
             updateFill();
 
             // Bound label + display input
             const bounded = document.createElement("div");
-            bounded.classList.add("bounded", "w-[146px]");
+            bounded.classList.add("bounded", "w-[146px]", "flex", "flex-col", "gap-[4px]");
 
             const boundLabel = document.createElement("div");
-            boundLabel.className = "range-bound-label";
+            boundLabel.classList.add("range-bound-label", "text-xs", "font-medium", "font-mulish", "text-subtitle");
             boundLabel.textContent = c.type === "max" ? "Max" : "Min";
 
             const display = document.createElement("input");
             display.type = "text";
-            display.classList.add("value-input", "w-full");
+            display.classList.add("value-input", "w-full", "bg-white", "text-xs", "text-black", "font-mulish", "font-medium", "border", "border-solid", "border-[#0b0b0b]", "outline-none");
+            display.style.border = "1px solid #0b0b0b";
+            display.style.borderRadius = "8px";
             display.value = c.format(currentVal);
 
             bounded.append(boundLabel);
