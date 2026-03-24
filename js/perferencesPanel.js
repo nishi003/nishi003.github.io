@@ -84,18 +84,15 @@ const sections = [
 function buildPanel(containerId, sections) {
     const container = document.getElementById(containerId);
 
-    const panel = document.createElement("div");
-    panel.classList.add("preferences-panel", "bg-panel", "rounded-[20px]", "w-fit", "h-fit", "max-h-full", "flex", "flex-col", "p-[28px]", "gap-[24px]", "overflow-hidden");
-
     // Header
     const header = document.createElement("div");
     header.id = "preferences-header"
-    header.classList.add("flex", "flex-col", "gap-2", "w-full")
+    header.classList.add("flex", "flex-col", "gap-[12px]", "w-[300px]")
     header.innerHTML = `
-    <p class="text-2xl font-semibold font-roboto text-white">Neighborhood Preferences</p>
+    <p class="text-2xl font-semibold font-roboto text-white leading-7">Neighborhood Preferences</p>
     <p class="text-xs font-medium font-mulish text-subtitle">Refine your criteria to discover neighborhoods<br>tailored to your lifestyle.</p>
     `;
-    panel.appendChild(header);
+    container.appendChild(header);
 
     // Categories
     const categories = document.createElement("div");
@@ -193,8 +190,7 @@ function buildPanel(containerId, sections) {
         categories.appendChild(sec);
     });
 
-    panel.appendChild(categories);
-    container.appendChild(panel);
+    container.appendChild(categories);
 }
 
 buildPanel("preferences-panel", sections);
