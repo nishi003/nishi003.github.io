@@ -7,7 +7,7 @@ const sections = [
                 label: "Maximum average rent (per month)",
                 tooltip: "Average monthly rent across 2 bedroom 2 bathroom units in the neighbourhood",
                 type: "max",
-                min: 500,
+                min: 0,
                 max: 10000,
                 step: 100,
                 defaultVal: 10000,
@@ -169,6 +169,18 @@ function buildPanel(containerId, sections) {
             display.style.border = "1px solid #0b0b0b";
             display.style.borderRadius = "8px";
             display.value = c.format(currentVal);
+
+            display.addEventListener("change", () => {
+                const raw = parseFloat(display.value.replace(/[^0-9.]/g, ""));
+                if (!isNaN(raw)) {
+                    currentVal = Math.min(Math.max(raw, c.min), c.max); // clamp to min/max
+                    slider.value = currentVal;
+                    display.value = c.format(currentVal);
+                    updateFill();
+                } else {
+                    display.value = c.format(currentVal); // revert if invalid
+                }
+            });
 
             bounded.append(boundLabel);
             bounded.append(display);
