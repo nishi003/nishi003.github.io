@@ -124,7 +124,7 @@ function buildPreferencesPanel(containerId, sections) {
     header.id = "preferences-header"
     header.classList.add("flex", "flex-col", "gap-[8px]", "w-[300px]")
     header.innerHTML = `
-    <p class="text-2xl font-semibold font-roboto text-white leading-7">Neighborhood Preferences</p>
+    <p class="text-2xl font-semibold font-roboto text-white leading-8">Neighborhood Preferences</p>
     <p class="text-xs font-medium font-mulish text-subtitle">Refine your criteria to discover neighborhoods<br>tailored to your lifestyle.</p>
     `;
     container.appendChild(header);
