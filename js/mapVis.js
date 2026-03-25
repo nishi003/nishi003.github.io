@@ -59,19 +59,18 @@ class MapVis {
     }
 
     moveTooltip(event) {
-        const pad = 12;
         const node = this.tooltip.node();
         if (!node) return;
 
         const rect = node.getBoundingClientRect();
-        let x = event.clientX + pad;
-        let y = event.clientY - rect.height - pad;
+        let x = event.clientX - (rect.width / 2);
+        let y = event.clientY - rect.height - 10;
 
         if (x + rect.width > window.innerWidth - 8) {
-            x = event.clientX - rect.width - pad;
+            x = event.clientX - rect.width;
         }
         if (y < 8) {
-            y = event.clientY + pad;
+            y = event.clientY;
         }
 
         this.tooltip
