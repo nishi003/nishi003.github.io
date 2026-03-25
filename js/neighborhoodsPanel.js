@@ -188,7 +188,7 @@ function renderRadarChart(container, bestMatch, comparedNeighborhood) {
             .attr("x", x)
             .attr("y", y)
             .attr("fill", "white")
-            .attr("font-size", "10px")
+            .attr("font-size", "11px")
             .attr("font-family", "Mulish, sans-serif")
             .attr("font-weight", 500)
             .attr("text-anchor", anchor)

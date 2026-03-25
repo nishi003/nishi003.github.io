@@ -5,29 +5,44 @@ function updateAllVisualizations() {
 }
 
 function getFilteredNeighborhoods(neighborhoods, criteria) {
-    const { rentMax, safetyMin, transitMin, diningMin, greenMin } = criteria;
     return neighborhoods
         .filter(h =>
-            h.avg_rent <= rentMax &&
-            h.safety >= safetyMin &&
-            h.transit_score >= transitMin &&
-            h.dining_score >= diningMin &&
-            h.green_space_score >= greenMin
+            h.avg_rent <= criteria.rentMax &&
+            h.safety >= criteria.safetyMin &&
+            h.transit_score >= criteria.transitMin &&
+            h.dining_score >= criteria.diningMin &&
+            h.green_space_score >= criteria.greenMin
         )
-        .sort((a, b) => scoreNeighborhood(b) - scoreNeighborhood(a));
+        .sort((a, b) => scoreNeighborhood(b, criteria) - scoreNeighborhood(a, criteria));
 }
+function scoreNeighborhood(h, criteria = { rentMax: 10000, safetyMin: 0, transitMin: 0, diningMin: 0, greenMin: 0 }) {
+    if (
+        h.avg_rent > criteria.rentMax &&
+        h.safety < criteria.safetyMin &&
+        h.transit_score < criteria.transitMin &&
+        h.dining_score < criteria.diningMin &&
+        h.green_space_score < criteria.greenMin
+    ) return 0;
 
-function scoreNeighborhood(h) {
     const RENT_MIN = 1500, RENT_MAX = 6000;
     const affordability = 1 - (h.avg_rent - RENT_MIN) / (RENT_MAX - RENT_MIN);
     const rentScore = Math.max(0, Math.min(1, affordability));
-    return (
-        (h.safety / 100) * 20 +
-        (h.transit_score / 100) * 20 +
-        (h.dining_score / 100) * 20 +
-        (h.green_space_score / 100) * 20 +
-        rentScore * 25
-    );
+
+    // How far above the user's minimum each score is (0–1), penalizes just meeting the bar
+    const safetyMargin = criteria.safetyMin > 0 ? (h.safety - criteria.safetyMin) / (100 - criteria.safetyMin) : h.safety / 100;
+    const transitMargin = criteria.transitMin > 0 ? (h.transit_score - criteria.transitMin) / (100 - criteria.transitMin) : h.transit_score / 100;
+    const diningMargin = criteria.diningMin > 0 ? (h.dining_score - criteria.diningMin) / (100 - criteria.diningMin) : h.dining_score / 100;
+    const greenMargin = criteria.greenMin > 0 ? (h.green_space_score - criteria.greenMin) / (100 - criteria.greenMin) : h.green_space_score / 100;
+    const rentMargin = criteria.rentMax < 10000 ? (criteria.rentMax - h.avg_rent) / (criteria.rentMax - RENT_MIN) : rentScore;
+
+    const raw =
+        Math.max(0, safetyMargin) * 25 +
+        Math.max(0, transitMargin) * 25 +
+        Math.max(0, diningMargin) * 25 +
+        Math.max(0, greenMargin) * 25 +
+        Math.max(0, rentMargin) * 25;
+
+    return (raw / 125) * 100;
 }
 
 const SF_HOODS_URL = "../data/SF_Find_Neighborhoods_20260318.geojson";
@@ -68,7 +83,7 @@ function initMainPage(allDataArray) {
     const best = neighborhoods.reduce((b, n) =>
         (!b || scoreNeighborhood(n) > scoreNeighborhood(b)) ? n : b, null);
     appData.bestMatch = best
-        ? { ...best, matchScore: Math.round(scoreNeighborhood(best)) }
+        ? { ...best, matchScore: Math.round(scoreNeighborhood(best, appData.criteria)) }
         : null;
 
     // Instantiate visualizations
@@ -100,8 +115,16 @@ function onCriteriaChanged(activeCriteria) {
     );
 
     myMapVis.appData.bestMatch = filtered[0]
-        ? { ...filtered[0], matchScore: Math.round(scoreNeighborhood(filtered[0])) }
+        ? { ...filtered[0], matchScore: Math.round(scoreNeighborhood(filtered[0], activeCriteria)) }
         : null;
+
+    if (myMapVis.appData.comparedNeighborhood) {
+        myMapVis.appData.comparedNeighborhood = {
+            ...myMapVis.appData.comparedNeighborhood,
+            matchScore: Math.round(scoreNeighborhood(myMapVis.appData.comparedNeighborhood, activeCriteria))
+        };
+        renderCompareCard(myMapVis.appData.comparedNeighborhood);
+    }
 
     updateAllVisualizations();
     renderBestMatchCard(myMapVis.appData.bestMatch);
@@ -111,7 +134,7 @@ function onNeighborhoodSelected(neighborhood) {
     if (!myMapVis) return;
 
     myMapVis.appData.comparedNeighborhood = neighborhood
-        ? { ...neighborhood, matchScore: Math.round(scoreNeighborhood(neighborhood)) }
+        ? { ...neighborhood, matchScore: Math.round(scoreNeighborhood(neighborhood, myMapVis.appData.criteria)) }
         : null;
 
     renderCompareCard(myMapVis.appData.comparedNeighborhood);
