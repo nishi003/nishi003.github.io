@@ -1,3 +1,3 @@
-# CSC316-A3
+# Github Pages
 
-https://nishi003.github.io/index.html
+https://nishi003.github.io/
