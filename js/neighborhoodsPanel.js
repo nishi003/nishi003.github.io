@@ -39,6 +39,36 @@ function buildNeighborhoodsPanel(containerId) {
         "cursor-pointer",
     );
 
+    resetButton.addEventListener("click", () => {
+        sections.forEach((section) => {
+            const sec = document.querySelector(`[data-id="${section.id}"]`);
+            if (!sec) return;
+            const slider = sec.querySelector(".range");
+            const display = sec.querySelector(".value-input");
+            if (!slider || !display) return;
+
+            const c = section.criteria[0];
+            slider.value = c.defaultVal;
+            display.value = c.format(c.defaultVal);
+
+            // Update fill
+            const pct = ((c.defaultVal - c.min) / (c.max - c.min)) * 100;
+            if (c.type === "max") {
+                slider.style.background = `linear-gradient(to right, #ffffff ${pct}%, #333333 ${pct}%)`;
+            } else {
+                slider.style.background = `linear-gradient(to right, #333333 ${pct}%, #ffffff ${pct}%)`;
+            }
+        });
+
+        onCriteriaChanged({
+            rentMax: 10000,
+            safetyMin: 0,
+            transitMin: 0,
+            diningMin: 0,
+            greenMin: 0,
+        });
+    });
+
     bestTitleWrap.append(bestTitle);
     bestTitleWrap.append(resetButton);
 

@@ -43,14 +43,14 @@ class MapVis {
         d3.select(event.currentTarget).raise()
             .style("filter", "url(#neighbourhood-glow)")
             .style("stroke", "#faf9f6")
-            .style("stroke-width", "0.18rem");
+            .style("stroke-width", "3px");
     }
 
     handleMouseLeave(event, d) {
         d3.select(event.currentTarget)
             .style("filter", null)
             .style("stroke", "var(--border)")
-            .style("stroke-width", "0.1rem");
+            .style("stroke-width", "1px");
     }
 
     initVis() {
@@ -59,14 +59,9 @@ class MapVis {
         requestAnimationFrame(() => {
             const container = document.getElementById(vis.parentElement);
             const bounds = container.getBoundingClientRect();
-
-
             vis.margin = { top: 20, right: 20, bottom: 40, left: 20 };
-
             vis.width = bounds.width - vis.margin.left - vis.margin.right;
             vis.height = bounds.height - vis.margin.top - vis.margin.bottom;
-
-            console.log(bounds.width, bounds.height);
 
             // SVG
             vis.svg = d3.select("#" + vis.parentElement).append("svg")
@@ -101,11 +96,6 @@ class MapVis {
                 .fitSize([vis.width, vis.height], vis.appData.sfGeoJSON);
             vis.path = d3.geoPath().projection(vis.projection);
 
-            // add title
-            // vis.title = d3.select("#map-title").append("h1")
-            //     .text("test")
-
-            // draw base paths
             // draw all neighbourhood polygons
             vis.mapGroup.selectAll(".neighbourhood-path")
                 .data(vis.appData.sfGeoJSON.features)
@@ -114,23 +104,11 @@ class MapVis {
                 .attr("class", "neighbourhood-path")
                 .style("fill", "var(--inside)")
                 .style("stroke", "var(--border)")
-                .style("stroke-width", "0.1rem")
+                .style("stroke-width", "2px")
                 .style("stroke-linejoin", "round")
                 .style("cursor", "pointer")
                 .on("mouseenter", (event, d) => vis.handleMouseEnter(event, d))
                 .on("mouseleave", (event, d) => vis.handleMouseLeave(event, d));
-
-            // Glow filter for highlighted neighbourhood
-            // const glow = defs.append("filter")
-            //     .attr("id", "hood-glow")
-            //     .attr("x", "-30%").attr("y", "-30%")
-            //     .attr("width", "160%").attr("height", "160%");
-            // glow.append("feGaussianBlur")
-            //     .attr("stdDeviation", "3")
-            //     .attr("result", "coloredBlur");
-            // const merge = glow.append("feMerge");
-            // merge.append("feMergeNode").attr("in", "coloredBlur");
-            // merge.append("feMergeNode").attr("in", "SourceGraphic");
 
             // ── NEIGHBOURHOOD LABELS ───────────────────────────
             // Labels only visible when zoomed in (opacity controlled by zoom handler)
@@ -209,13 +187,12 @@ class MapVis {
                         .style("opacity", 1)
                         .style("filter", isHighlit ? "url(#hood-glow)" : null)
                         .style("stroke", isHighlit ? "#ffffff" : "var(--border)")
-                        .style("stroke-width", isHighlit ? "2px" : "1px");
+                        .style("stroke-width", isHighlit ? "3px" : "1px");
                 } else {
                     // Failing neighbourhood — dim significantly
                     path.style("fill", "rgba(255,255,255,0.04)")
                         .style("opacity", 0.5)
                         .style("filter", null)
-                        .style("stroke", "rgba(255,255,255,0.12)")
                         .style("stroke-width", "1px");
                 }
             });
