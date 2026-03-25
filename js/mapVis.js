@@ -22,7 +22,65 @@ class MapVis {
         // Track which neighbourhood is selected (compared)
         this.selectedId = null;
 
+        if (!document.getElementById("map-tooltip")) {
+            const tip = document.createElement("div");
+            tip.id = "map-tooltip";
+            tip.style.cssText = `
+                position: fixed;
+                background: white;
+                color: black;
+                font-size: 12px;
+                font-family: 'Mulish', sans-serif;
+                font-weight: 500;
+                padding: 12px;
+                border-radius: 12px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.2s;
+                z-index: 9999;
+                white-space: nowrap;
+            `;
+            document.body.appendChild(tip);
+        }
+        this.tooltip = d3.select("#map-tooltip");
+
         this.initVis();
+    }
+
+    showTooltip(event, d) {
+        const name = d?.properties?.name || "Unknown neighborhood";
+
+        this.tooltip
+            .style("opacity", 1)
+            .html(name);
+
+        this.moveTooltip(event);
+    }
+
+    moveTooltip(event) {
+        const pad = 12;
+        const node = this.tooltip.node();
+        if (!node) return;
+
+        const rect = node.getBoundingClientRect();
+        let x = event.clientX + pad;
+        let y = event.clientY - rect.height - pad;
+
+        if (x + rect.width > window.innerWidth - 8) {
+            x = event.clientX - rect.width - pad;
+        }
+        if (y < 8) {
+            y = event.clientY + pad;
+        }
+
+        this.tooltip
+            .style("left", `${x}px`)
+            .style("top", `${y}px`);
+    }
+
+    hideTooltip() {
+        this.tooltip.style("opacity", 0);
     }
 
     handleMouseEnter(event, d) {
@@ -160,8 +218,15 @@ class MapVis {
                 .style("stroke-width", "2px")
                 .style("stroke-linejoin", "round")
                 .style("cursor", "pointer")
-                .on("mouseenter", (event, d) => vis.handleMouseEnter(event, d))
-                .on("mouseleave", (event, d) => vis.handleMouseLeave(event, d))
+                .on("mouseenter", (event, d) => {
+                    vis.handleMouseEnter(event, d);
+                    vis.showTooltip(event, d);
+                })
+                .on("mousemove", (event) => vis.moveTooltip(event))
+                .on("mouseleave", (event, d) => {
+                    vis.handleMouseLeave(event, d);
+                    vis.hideTooltip();
+                })
                 .on("click", (event, d) => vis.handleClick(event, d));
 
             vis.wrangleData();
