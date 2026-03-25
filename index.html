@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="en">
-  <head>
+<html lang="en" class="h-full">
+  <head class="h-full">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SF Neighbourhood Finder</title>
@@ -56,7 +56,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
   </head>
-  <body class="overflow-hidden">
+  <body class="overflow-hidden h-full">
     <div class="bg-background flex flex-col h-full p-16 gap-4">
       <div class="w-full flex flex-col items-center justify-center gap-2">
         <p class="text-6xl font-semibold font-roboto text-white">BayMatch</p>
@@ -72,7 +72,7 @@
         <div id="map-container" class="flex-1 h-full min-w-0"></div>
         <div
           id="neighborhoods-panel"
-          class="h-full bg-panel rounded-[20px] flex flex-col p-[28px] gap-[16px]"
+          class="self-stretch min-h-0 bg-panel rounded-[20px] flex flex-col overflow-hidden"
         ></div>
       </div>
     </div>

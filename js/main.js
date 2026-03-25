@@ -77,6 +77,15 @@ function initMainPage(allDataArray) {
     // Build panels
     buildPreferencesPanel("preferences-panel", sections);
     buildNeighborhoodsPanel("neighborhoods-panel");
+
+    // Render initial cards
+    renderBestMatchCard(appData.bestMatch);
+    renderCompareCard(null);
+
+    // Wire up UNSELECT button
+    document.getElementById("unselect-button").addEventListener("click", () => {
+        onNeighborhoodSelected(null);
+    });
 }
 
 function onCriteriaChanged(activeCriteria) {
@@ -93,5 +102,17 @@ function onCriteriaChanged(activeCriteria) {
         ? { ...filtered[0], matchScore: Math.round(scoreNeighborhood(filtered[0])) }
         : null;
 
+    updateAllVisualizations();
+    renderBestMatchCard(myMapVis.appData.bestMatch);
+}
+
+function onNeighborhoodSelected(neighborhood) {
+    if (!myMapVis) return;
+
+    myMapVis.appData.comparedNeighborhood = neighborhood
+        ? { ...neighborhood, matchScore: Math.round(scoreNeighborhood(neighborhood)) }
+        : null;
+
+    renderCompareCard(myMapVis.appData.comparedNeighborhood);
     updateAllVisualizations();
 }

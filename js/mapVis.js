@@ -19,22 +19,8 @@ class MapVis {
         // Track which neighbourhood is highlighted from results panel
         this.highlightedId = null;
 
-        // TODO: tooltip element (shared, appended once)
-        // this.tooltip = d3.select("body").append("div")
-        //     .attr("class", "map-tooltip")
-        //     .style("opacity", 0)
-        //     .style("position", "fixed")
-        //     .style("pointer-events", "none")
-        //     .style("z-index", 1000)
-        //     .style("background", "#0a0a0f")
-        //     .style("border", "1px solid rgba(255,255,255,0.25)")
-        //     .style("border-radius", "6px")
-        //     .style("padding", "10px 14px")
-        //     .style("font-family", "inherit")
-        //     .style("font-size", "12px")
-        //     .style("color", "#faf9f6")
-        //     .style("max-width", "200px")
-        //     .style("box-shadow", "0 8px 32px rgba(0,0,0,0.6)");
+        // Track which neighbourhood is selected (compared)
+        this.selectedId = null;
 
         this.initVis();
     }
@@ -42,12 +28,22 @@ class MapVis {
     handleMouseEnter(event, d) {
         const id = d.properties.id;
         const isBest = id === this.appData.bestMatch?.id;
-        if (isBest) {
+        const isSelected = id === this.selectedId;
+
+        if (isSelected) {
+            d3.select(event.currentTarget)
+                .style("filter", "url(#selected-glow)")
+                .style("stroke", "#0088FF")
+                .style("stroke-width", "3px")
+                .style("fill", "rgba(0, 136, 255, 0.45)")
+                .raise();
+        } else if (isBest) {
             d3.select(event.currentTarget)
                 .style("filter", "url(#best-glow)")
                 .style("stroke", "#009951")
                 .style("stroke-width", "3px")
-                .style("fill", "rgba(0, 153, 81, 0.3)");
+                .style("fill", "rgba(0, 153, 81, 0.45)")
+                .raise();
         } else {
             d3.select(event.currentTarget).raise()
                 .style("filter", "url(#neighbourhood-glow)")
@@ -59,18 +55,27 @@ class MapVis {
     handleMouseLeave(event, d) {
         const id = d.properties.id;
         const isBest = id === this.appData.bestMatch?.id;
+        const isSelected = id === this.selectedId;
 
-        if (isBest) {
+        if (isSelected) {
+            d3.select(event.currentTarget)
+                .style("filter", "url(#selected-glow)")
+                .style("stroke", "#0088FF")
+                .style("stroke-width", "2px")
+                .style("fill", "rgba(0, 136, 255, 0.3)");
+        } else if (isBest) {
             d3.select(event.currentTarget)
                 .style("filter", "url(#best-glow)")
                 .style("stroke", "#009951")
                 .style("stroke-width", "2px")
-                .style("fill", "rgba(0, 153, 81, 0.3)");
+                .style("fill", "rgba(0, 153, 81, 0.3)")
+                .raise();
         } else {
             d3.select(event.currentTarget)
                 .style("filter", null)
                 .style("stroke", "var(--border)")
-                .style("stroke-width", "1px");
+                .style("stroke-width", "1px")
+                .lower();
         }
     }
 
@@ -89,51 +94,62 @@ class MapVis {
                 .attr("width", bounds.width)
                 .attr("height", bounds.height);
 
-            // defs: clip path + subtle glow filter
+            // defs: clip path + subtle glow filters
             const defs = vis.svg.append("defs");
 
+            // Default hover glow (white)
             const glow = defs.append("filter")
                 .attr("id", "neighbourhood-glow")
                 .attr("x", "-50%")
                 .attr("y", "-50%")
                 .attr("width", "160%")
                 .attr("height", "160%");
-
             glow.append("feGaussianBlur")
                 .attr("stdDeviation", 3.5)
                 .attr("result", "coloredBlur");
-
             const merge = glow.append("feMerge");
-
             merge.append("feMergeNode").attr("in", "coloredBlur");
             merge.append("feMergeNode").attr("in", "SourceGraphic");
 
+            // Best match glow (green)
             const bestGlow = defs.append("filter")
                 .attr("id", "best-glow")
                 .attr("x", "-50%")
                 .attr("y", "-50%")
                 .attr("width", "160%")
                 .attr("height", "160%");
-
             bestGlow.append("feGaussianBlur")
                 .attr("stdDeviation", 4)
                 .attr("result", "coloredBlur");
-
             const bestMerge = bestGlow.append("feMerge");
             bestMerge.append("feMergeNode").attr("in", "coloredBlur");
             bestMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-            // main group - receives zoom transform
+            // Selected glow (blue)
+            const selectedGlow = defs.append("filter")
+                .attr("id", "selected-glow")
+                .attr("x", "-50%")
+                .attr("y", "-50%")
+                .attr("width", "160%")
+                .attr("height", "160%");
+            selectedGlow.append("feGaussianBlur")
+                .attr("stdDeviation", 4)
+                .attr("result", "coloredBlur");
+            const selectedMerge = selectedGlow.append("feMerge");
+            selectedMerge.append("feMergeNode").attr("in", "coloredBlur");
+            selectedMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+            // Main group - receives zoom transform
             vis.mapGroup = vis.svg.append("g")
                 .attr("class", "map-group")
                 .attr("transform", `translate(${vis.margin.left}, ${vis.margin.top})`);
 
-            // projection - fit the SF GeoJSON into the available space
+            // Projection - fit the SF GeoJSON into the available space
             vis.projection = d3.geoMercator()
                 .fitSize([vis.width, vis.height], vis.appData.sfGeoJSON);
             vis.path = d3.geoPath().projection(vis.projection);
 
-            // draw all neighbourhood polygons
+            // Draw all neighbourhood polygons
             vis.mapGroup.selectAll(".neighbourhood-path")
                 .data(vis.appData.sfGeoJSON.features)
                 .join("path")
@@ -145,46 +161,28 @@ class MapVis {
                 .style("stroke-linejoin", "round")
                 .style("cursor", "pointer")
                 .on("mouseenter", (event, d) => vis.handleMouseEnter(event, d))
-                .on("mouseleave", (event, d) => vis.handleMouseLeave(event, d));
-
-            // ── NEIGHBOURHOOD LABELS ───────────────────────────
-            // Labels only visible when zoomed in (opacity controlled by zoom handler)
-            // vis.mapGroup.selectAll(".neighbourhood-label")
-            //     .data(vis.appData.sfGeoJSON.features)
-            //     .join("text")
-            //     .attr("class", "neighbourhood-label")
-            //     .attr("transform", d => {
-            //         const [x, y] = vis.path.centroid(d);
-            //         return `translate(${x}, ${y})`;
-            //     })
-            //     .attr("text-anchor", "middle")
-            //     .attr("dominant-baseline", "middle")
-            //     .style("font-size", "10px")
-            //     .style("font-family", "inherit")
-            //     .style("fill", "var(--text)")
-            //     .style("pointer-events", "none")
-            //     .style("opacity", 0)               // hidden until zoomed
-            //     .style("letter-spacing", "0.03em")
-            //     .text(d => d.properties.name);
-
-            // ── LEGEND ─────────────────────────────────────────
-            // vis._drawLegend();
-
-            // ── ZOOM HINT ──────────────────────────────────────
-            // vis.svg.append("text")
-            //     .attr("class", "zoom-hint")
-            //     .attr("x", vis.width + vis.margin.left)
-            //     .attr("y", vis.height + vis.margin.top)
-            //     .attr("text-anchor", "end")
-            //     .attr("dominant-baseline", "auto")
-            //     .style("font-size", "10px")
-            //     .style("fill", "rgba(255,255,255,0.25)")
-            //     .style("font-family", "inherit")
-            //     .style("letter-spacing", "0.08em")
-            //     .text("SCROLL TO ZOOM · DOUBLE-CLICK TO RESET");
+                .on("mouseleave", (event, d) => vis.handleMouseLeave(event, d))
+                .on("click", (event, d) => vis.handleClick(event, d));
 
             vis.wrangleData();
         });
+    }
+
+    handleClick(event, d) {
+        let vis = this;
+        const id = d.properties.id;
+        if (!id || id === -1) return;
+
+        // Toggle off if clicking the same neighbourhood again
+        if (vis.selectedId === id) {
+            vis.selectedId = null;
+            onNeighborhoodSelected(null);
+        } else {
+            vis.selectedId = id;
+            onNeighborhoodSelected(d.properties);
+        }
+
+        vis.updateVis();
     }
 
     // ── Called whenever filters change ──────────────────────
@@ -203,6 +201,7 @@ class MapVis {
         let vis = this;
 
         const bestId = vis.appData.bestMatch?.id;
+        const selectedId = vis.selectedId;
 
         vis.mapGroup.selectAll(".neighbourhood-path")
             .each(function (d) {
@@ -212,6 +211,7 @@ class MapVis {
                 const isNoData = id === undefined || id === -1;
                 const isHighlit = id === vis.highlightedId;
                 const isBest = id === bestId;
+                const isSelected = id === selectedId;
 
                 const path = d3.select(this);
 
@@ -219,6 +219,13 @@ class MapVis {
                     path.style("fill", "rgba(255,255,255,0.03)")
                         .style("opacity", 0.4)
                         .style("filter", null);
+                } else if (isSelected) {
+                    path.style("fill", "rgba(0, 136, 255, 0.3)")
+                        .style("opacity", 1)
+                        .style("stroke", "#0088FF")
+                        .style("stroke-width", "2px")
+                        .style("filter", "url(#selected-glow)")
+                        .raise();
                 } else if (isBest) {
                     path.style("fill", "rgba(0, 153, 81, 0.3)")
                         .style("opacity", 1)
@@ -236,7 +243,8 @@ class MapVis {
                     path.style("fill", "rgba(255,255,255,0.04)")
                         .style("opacity", 0.5)
                         .style("filter", null)
-                        .style("stroke-width", "1px");
+                        .style("stroke-width", "1px")
+                        .style("stroke", "var(--border)");
                 }
             });
     }
@@ -348,24 +356,6 @@ class MapVis {
             .style("fill", "var(--inside)");
 
         vis.tooltip.style("opacity", 0);
-    }
-
-    _onClick(event, d) {
-        let vis = this;
-        const id = d.properties.id;
-        if (!id || id === -1) return;
-
-        // If it's a matching neighbourhood, highlight it and
-        // tell the results panel to jump to it
-        if (vis.matchingIds.has(id)) {
-            vis.highlightedId = id;
-            vis.updateVis();
-
-            // Notify results panel (implement jumpToId there)
-            if (window.myNeighbourhood && typeof myNeighbourhood.jumpToId === "function") {
-                myNeighbourhood.jumpToId(id);
-            }
-        }
     }
 
     // ── Legend ──────────────────────────────────────────────

@@ -1,5 +1,108 @@
+function getMatchColor(score) {
+    if (score >= 60) return "#27C840";
+    if (score >= 35) return "#FEBC2F";
+    return "#FF5F57";
+}
+
+function renderNeighborhoodCard(neigborhood, isBestMatch) {
+    const cardContainer = document.createElement("div");
+    cardContainer.classList.add("card-container", "w-full", "h-fit", "flex", "flex-col", "p-[20px]", "rounded-[20px]", "transition-all", "duration-200", "collapsed");
+    cardContainer.style.border = "1px solid #565656";
+
+    if (neigborhood) {
+        const cardHeader = document.createElement("div");
+        cardHeader.classList.add("w-full", "flex", "flex-col", "gap-[4px]");
+
+        const headerRow = document.createElement("div");
+        headerRow.classList.add("flex", "flex-row", "justify-between", "items-center", "cursor-pointer");
+        headerRow.innerHTML = `
+        <p class="text-base text-white font-mulish font-semibold leading-5">${neigborhood.name}</p>
+        <svg class="chevron w-[20px] h-[20px] background-white" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"/>
+        </svg>
+        `;
+        headerRow.addEventListener("click", () => {
+            cardContainer.classList.toggle("collapsed");
+        });
+
+        const matchValue = document.createElement("p");
+        matchValue.textContent = `${neigborhood.matchScore}% match`;
+        matchValue.classList.add("text-xs", "font-roboto", "font-medium");
+        matchValue.style.color = getMatchColor(neigborhood.matchScore);
+
+        cardHeader.append(headerRow);
+        cardHeader.append(matchValue);
+
+        const details = document.createElement("div");
+        details.classList.add("details", "w-full", "flex", "flex-col", "gap-[12px]");
+
+        const stats = [
+            { label: "Average Rent", value: `$${neigborhood.avg_rent?.toLocaleString()} per month` },
+            { label: "Safety Score", value: `${neigborhood.safety}/100` },
+            { label: "Transit Score", value: `${neigborhood.transit_score}/100` },
+            { label: "Dining Score", value: `${neigborhood.dining_score}/100` },
+            { label: "Green Space Score", value: `${neigborhood.green_space_score}/100` },
+        ];
+
+        stats.forEach(({ label, value }) => {
+            const row = document.createElement("div");
+            row.classList.add("flex", "flex-col", "gap-[4px]");
+
+            const labelEl = document.createElement("p");
+            labelEl.textContent = label;
+            labelEl.classList.add("text-xs", "font-bold", "font-mulish", "text-white");
+
+            const valueEl = document.createElement("p");
+            valueEl.textContent = value;
+            valueEl.classList.add("text-xs", "font-medium", "font-mulish", "text-white");
+
+            row.append(labelEl);
+            row.append(valueEl);
+            details.append(row);
+        });
+
+        cardContainer.append(cardHeader);
+        cardContainer.append(details);
+
+    } else {
+        if (isBestMatch) {
+            const noMatchTitle = document.createElement("p");
+            noMatchTitle.textContent = "No match found";
+            noMatchTitle.classList.add("text-base", "text-white", "font-roboto", "font-semibold", "leading-5");
+
+            const noMatchText = document.createElement("p");
+            noMatchText.textContent = "Unfortunately no neighborhoods in San Francisco seem to be a match. Readjust your preferences and try again."
+            noMatchText.classList.add("text-xs", "text-subtitle", "font-mulish", "font-medium", "pt-[12px]");
+
+            cardContainer.append(noMatchTitle);
+            cardContainer.append(noMatchText);
+
+        } else {
+            const noCompareTitle = document.createElement("p");
+            noCompareTitle.textContent = "No neighborhood selected";
+            noCompareTitle.classList.add("text-base", "text-white", "font-roboto", "font-semibold", "leading-5");
+
+            const noCompareText = document.createElement("p");
+            noCompareText.textContent = "Select a neighborhood to see how it compares to your best fit."
+            noCompareText.classList.add("text-xs", "text-subtitle", "font-mulish", "font-medium", "pt-[12px]");
+
+            cardContainer.append(noCompareTitle);
+            cardContainer.append(noCompareText);
+        }
+    }
+
+    return cardContainer;
+}
+
 function buildNeighborhoodsPanel(containerId) {
     const container = document.getElementById(containerId);
+
+    const shell = document.createElement("div");
+    shell.classList.add("flex", "flex-col", "flex-1", "min-h-0", "p-[28px]", "overflow-hidden");
+
+    const scrollWrapper = document.createElement("div");
+    scrollWrapper.id = "scroll-wrapper"
+    scrollWrapper.classList.add("flex", "flex-col", "gap-[24px]", "overflow-y-auto", "flex-1", "min-h-0");
 
     // Best neighborhood section
     const bestSection = document.createElement("div");
@@ -78,7 +181,17 @@ function buildNeighborhoodsPanel(containerId) {
     bestHeader.append(bestTitleWrap);
     bestHeader.append(bestSubtitleWrap);
 
+    // Best neighborhood card
     bestSection.append(bestHeader);
+
+    let bestCardEl = renderNeighborhoodCard(null, true);
+    bestSection.append(bestCardEl);
+
+    window.renderBestMatchCard = function (match) {
+        const newCard = renderNeighborhoodCard(match, true);
+        bestSection.replaceChild(newCard, bestCardEl);
+        bestCardEl = newCard;
+    };
 
     // Comparison section
     const compareSection = document.createElement("div");
@@ -128,8 +241,21 @@ function buildNeighborhoodsPanel(containerId) {
     compareHeader.append(compareTitleWrap);
     compareHeader.append(compareSubtitleWrap);
 
+    // Compare Neighborhood Card
     compareSection.append(compareHeader);
 
-    container.append(bestSection);
-    container.append(compareSection);
+    let compareCardEl = renderNeighborhoodCard(null, false);
+    compareSection.append(compareCardEl);
+
+    window.renderCompareCard = function (neighborhood) {
+        const newCard = renderNeighborhoodCard(neighborhood, false);
+        compareSection.replaceChild(newCard, compareCardEl);
+        compareCardEl = newCard;
+    };
+
+    scrollWrapper.append(bestSection);
+    scrollWrapper.append(compareSection);
+
+    shell.append(scrollWrapper);
+    container.append(shell);
 }

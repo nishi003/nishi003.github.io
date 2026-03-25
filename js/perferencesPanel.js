@@ -142,10 +142,10 @@ function buildPreferencesPanel(containerId, sections) {
 
         // Header row
         const headerRow = document.createElement("div");
-        headerRow.classList.add("section-header", "flex", "flex-row", "justify-between", "cursor-pointer");
+        headerRow.classList.add("flex", "flex-row", "justify-between", "items-center", "cursor-pointer");
         headerRow.innerHTML = `
         <p class="section-title text-base font-semibold font-mulish text-white leading-5">${section.title}</p>
-        <svg class="chevron w-[20px] h-[20px] background-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="chevron w-[20px] h-[20px] background-white" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"/>
         </svg>
         `;
