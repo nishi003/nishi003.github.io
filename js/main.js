@@ -118,7 +118,14 @@ function onCriteriaChanged(activeCriteria) {
         ? { ...filtered[0], matchScore: Math.round(scoreNeighborhood(filtered[0], activeCriteria)) }
         : null;
 
-    if (myMapVis.appData.comparedNeighborhood) {
+    if (
+        myMapVis.appData.comparedNeighborhood &&
+        myMapVis.appData.bestMatch &&
+        myMapVis.appData.comparedNeighborhood.name === myMapVis.appData.bestMatch.name
+    ) {
+        myMapVis.appData.comparedNeighborhood = null;
+        renderCompareCard(null);
+    } else if (myMapVis.appData.comparedNeighborhood) {
         myMapVis.appData.comparedNeighborhood = {
             ...myMapVis.appData.comparedNeighborhood,
             matchScore: Math.round(scoreNeighborhood(myMapVis.appData.comparedNeighborhood, activeCriteria))

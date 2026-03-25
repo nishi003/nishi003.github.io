@@ -263,6 +263,12 @@ class MapVis {
                 .map(h => h.id)
         );
 
+        // If the selected neighborhood is now the best match, unselect it
+        if (vis.selectedId && vis.selectedId === vis.appData.bestMatch?.id) {
+            vis.selectedId = null;
+            onNeighborhoodSelected(null);
+        }
+
         vis.updateVis();
     }
 
