@@ -21,7 +21,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum safety score",
-                tooltip: "Scored 0–100 using local crime statistics. A score of 50+ is considered average.",
+                tooltip: "Scored 0–100 based on 2023 SFPD Incident Reports. Combines violent and drug crime rates per 1,000 residents. Lower crime yields a higher score.",
                 type: "min",
                 min: 0,
                 max: 100,

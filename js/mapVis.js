@@ -48,13 +48,16 @@ class MapVis {
         this.initVis();
     }
 
-    showTooltip(event, d) {
+    showTooltip(event, d, isNonResidential = false) {
         const name = d?.properties?.name || "Unknown neighborhood";
-
-        this.tooltip
-            .style("opacity", 1)
-            .html(name);
-
+        if (isNonResidential) {
+            this.tooltip.style("opacity", 1).html(`
+            <span style="font-weight:500;">${name}</span><br>
+            <span style="color:#27C840; font-size:11px;">Non-residential area</span>
+        `);
+        } else {
+            this.tooltip.style("opacity", 1).html(name);
+        }
         this.moveTooltip(event);
     }
 
@@ -83,6 +86,11 @@ class MapVis {
     }
 
     handleMouseEnter(event, d) {
+        if (d.properties.avg_rent === null || d.properties.safety === null) {
+            this.showTooltip(event, d, true); // true = non-residential
+            return;
+        }
+
         const id = d.properties.id;
         const isBest = id === this.appData.bestMatch?.id;
         const isSelected = id === this.selectedId;
@@ -107,6 +115,7 @@ class MapVis {
                 .style("stroke", "#faf9f6")
                 .style("stroke-width", "3px");
         }
+        this.showTooltip(event, d, false);
     }
 
     handleMouseLeave(event, d) {
@@ -153,6 +162,16 @@ class MapVis {
 
             // defs: clip path + subtle glow filters
             const defs = vis.svg.append("defs");
+
+            const hatch = defs.append("pattern")
+                .attr("id", "non-residential-hatch")
+                .attr("patternUnits", "userSpaceOnUse")
+                .attr("width", 6).attr("height", 6)
+                .attr("patternTransform", "rotate(45)");
+
+            hatch.append("line")
+                .attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 6)
+                .attr("stroke", "rgba(255,255,255,0.08)").attr("stroke-width", 2);
 
             // Default hover glow (white)
             const glow = defs.append("filter")
@@ -219,7 +238,6 @@ class MapVis {
                 .style("cursor", "pointer")
                 .on("mouseenter", (event, d) => {
                     vis.handleMouseEnter(event, d);
-                    vis.showTooltip(event, d);
                 })
                 .on("mousemove", (event) => vis.moveTooltip(event))
                 .on("mouseleave", (event, d) => {
@@ -238,6 +256,8 @@ class MapVis {
         const bestId = vis.appData.bestMatch?.id;
 
         if (!id || id === -1) return;
+
+        if (d.properties.avg_rent === null || d.properties.safety === null) return; // non-residential
 
         // Best match cannot be selected in compare
         if (id === bestId) return;
@@ -284,6 +304,7 @@ class MapVis {
                 const id = props.id;
                 const isMatch = vis.matchingIds.has(id);
                 const isNoData = id === undefined || id === -1;
+                const isNonResidential = props.avg_rent === null || props.safety === null;
                 const isHighlit = id === vis.highlightedId;
                 const isBest = id === bestId;
                 const isSelected = id === selectedId;
@@ -293,6 +314,13 @@ class MapVis {
                 if (isNoData) {
                     path.style("fill", "rgba(255,255,255,0.03)")
                         .style("opacity", 0.4)
+                        .style("filter", null);
+                } else if (isNonResidential) {
+                    path.style("fill", "url(#non-residential-hatch)")
+                        .style("opacity", 0.45)
+                        .style("stroke", "var(--border)")
+                        .style("stroke-width", "1px")
+                        .style("cursor", "not-allowed")
                         .style("filter", null);
                 } else if (isSelected) {
                     path.style("fill", "rgba(0, 136, 255, 0.3)")

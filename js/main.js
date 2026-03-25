@@ -6,6 +6,7 @@ function updateAllVisualizations() {
 
 function getFilteredNeighborhoods(neighborhoods, criteria) {
     return neighborhoods
+        .filter(h => h.avg_rent !== null && h.safety !== null)
         .filter(h =>
             h.avg_rent <= criteria.rentMax &&
             h.safety >= criteria.safetyMin &&
@@ -16,6 +17,7 @@ function getFilteredNeighborhoods(neighborhoods, criteria) {
         .sort((a, b) => scoreNeighborhood(b, criteria) - scoreNeighborhood(a, criteria));
 }
 function scoreNeighborhood(h, criteria = { rentMax: 10000, safetyMin: 0, transitMin: 0, diningMin: 0, greenMin: 0 }) {
+    if (h.avg_rent === null || h.safety === null || h.transit_score == null || h.dining_score == null || h.green_space_score == null) return 0;
     if (
         h.avg_rent > criteria.rentMax &&
         h.safety < criteria.safetyMin &&
