@@ -138,7 +138,6 @@ function buildNeighborhoodsPanel(containerId) {
         "hover:bg-white",
         "hover:font-bold",
         "hover:border-[#C8C8C8]",
-        "hover:scale-110",
         "cursor-pointer",
     );
 
@@ -169,6 +168,13 @@ function buildNeighborhoodsPanel(containerId) {
             diningMin: 0,
             greenMin: 0,
         });
+
+        onNeighborhoodSelected(null);
+
+        if (myMapVis) {
+            myMapVis.selectedId = null;
+            myMapVis.updateVis();
+        }
     });
 
     bestTitleWrap.append(bestTitle);
@@ -208,31 +214,7 @@ function buildNeighborhoodsPanel(containerId) {
     compareTitle.textContent = "Compare";
     compareTitle.classList.add("text-2xl", "font-semibold", "font-roboto", "text-white", "leading-6");
 
-    const unselectButton = document.createElement("button");
-    unselectButton.id = "unselect-button";
-    unselectButton.textContent = "UNSELECT";
-    unselectButton.classList.add(
-        "px-[12px]",
-        "py-[7px]",
-        "rounded-[10px]",
-        "border",
-        "border-panel",
-        "text-xs",
-        "font-semibold",
-        "font-mulish",
-        "text-white",
-        "bg-[#171717]",
-        "transition-all",
-        "duration-200",
-        "hover:bg-white",
-        "hover:font-bold",
-        "hover:border-[#C8C8C8]",
-        "hover:scale-110",
-        "cursor-pointer",
-    );
-
     compareTitleWrap.append(compareTitle);
-    compareTitleWrap.append(unselectButton);
 
     const compareSubtitleWrap = document.createElement("p");
     compareSubtitleWrap.textContent = "Compare a neighborhood with your best fit.";
