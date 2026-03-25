@@ -1,3 +1,21 @@
+function getRadarMetrics(neighborhood) {
+    if (!neighborhood) return null;
+
+    const RENT_MIN = 1500;
+    const RENT_MAX = 6000;
+
+    const affordability = 1 - (neighborhood.avg_rent - RENT_MIN) / (RENT_MAX - RENT_MIN);
+    const rentScore = Math.max(0, Math.min(100, affordability * 100));
+
+    return {
+        safety: neighborhood.safety ?? 0,
+        transit: neighborhood.transit_score ?? 0,
+        dining: neighborhood.dining_score ?? 0,
+        green: neighborhood.green_space_score ?? 0,
+        rent: rentScore,
+    };
+}
+
 function getMatchColor(score) {
     if (score >= 60) return "#27C840";
     if (score >= 35) return "#FEBC2F";
@@ -92,6 +110,110 @@ function renderNeighborhoodCard(neigborhood, isBestMatch) {
     }
 
     return cardContainer;
+}
+
+function renderRadarChart(container, bestMatch, comparedNeighborhood) {
+    container.innerHTML = "";
+
+    const width = 300;
+    const height = 250;
+    const cx = width / 2;
+    const cy = height / 2;
+    const maxRadius = 106;
+    const levels = 5;
+
+    const axes = [
+        { key: "safety", label: "Safety", angle: -Math.PI / 2 },
+        { key: "transit", label: "Transit", angle: 0 },
+        { key: "dining", label: "Dining", angle: Math.PI / 2 },
+        { key: "green", label: "Green", angle: Math.PI },
+    ];
+
+    const svg = d3.select(container)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .style("display", "block")
+        .style("margin", "0 auto");
+
+    const g = svg.append("g");
+
+    function pointFor(axis, value) {
+        const r = (value / 100) * maxRadius;
+        return [
+            cx + Math.cos(axis.angle) * r,
+            cy + Math.sin(axis.angle) * r
+        ];
+    }
+
+    function polygonPoints(radius) {
+        return axes.map(axis => {
+            const x = cx + Math.cos(axis.angle) * radius;
+            const y = cy + Math.sin(axis.angle) * radius;
+            return `${x},${y}`;
+        }).join(" ");
+    }
+
+    // grid
+    for (let i = 1; i <= levels; i++) {
+        const r = (i / levels) * maxRadius;
+        g.append("polygon")
+            .attr("points", polygonPoints(r))
+            .attr("fill", "none")
+            .attr("stroke", "#565656")
+            .attr("stroke-width", 1);
+    }
+
+    // axis labels
+    axes.forEach(axis => {
+        const labelRadius = maxRadius + 8;
+        let x = cx + Math.cos(axis.angle) * labelRadius;
+        let y = cy + Math.sin(axis.angle) * labelRadius;
+
+        let anchor = "middle";
+        if (axis.key === "transit") {
+            anchor = "start";
+        }
+        if (axis.key === "green") {
+            anchor = "end";
+        }
+        if (axis.key === "safety") {
+            y -= 4;
+        }
+        if (axis.key === "dining") {
+            y += 4;
+        }
+
+        g.append("text")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("fill", "white")
+            .attr("font-size", "10px")
+            .attr("font-family", "Mulish, sans-serif")
+            .attr("font-weight", 500)
+            .attr("text-anchor", anchor)
+            .attr("dominant-baseline", "middle")
+            .text(axis.label);
+    });
+
+    function drawShape(metrics, fill, stroke) {
+        if (!metrics) return;
+
+        const points = axes.map(axis => pointFor(axis, metrics[axis.key])).join(" ");
+
+        g.append("polygon")
+            .attr("points", points)
+            .attr("fill", fill)
+            .attr("fill-opacity", 0.65)
+            .attr("stroke", stroke)
+            .attr("stroke-width", 1.5);
+    }
+
+    const bestMetrics = getRadarMetrics(bestMatch);
+    const compareMetrics = getRadarMetrics(comparedNeighborhood);
+
+    drawShape(bestMetrics, "rgba(0, 153, 81, 0.7)", "#00A55A");
+    drawShape(compareMetrics, "rgba(0, 136, 255, 0.7)", "#0088FF");
 }
 
 function buildNeighborhoodsPanel(containerId) {
@@ -197,6 +319,8 @@ function buildNeighborhoodsPanel(containerId) {
         const newCard = renderNeighborhoodCard(match, true);
         bestSection.replaceChild(newCard, bestCardEl);
         bestCardEl = newCard;
+
+        window.renderBottomRadar(match, myMapVis?.appData?.comparedNeighborhood ?? null);
     };
 
     // Comparison section
@@ -233,11 +357,37 @@ function buildNeighborhoodsPanel(containerId) {
         const newCard = renderNeighborhoodCard(neighborhood, false);
         compareSection.replaceChild(newCard, compareCardEl);
         compareCardEl = newCard;
+
+        window.renderBottomRadar(myMapVis?.appData?.bestMatch ?? null, neighborhood);
     };
 
+    // Radar Chart Section
+    const radarSection = document.createElement("div");
+    radarSection.id = "radar-section";
+    radarSection.classList.add(
+        "w-[300px]",
+        "h-fit",
+        "flex",
+        "flex-col",
+        "items-center",
+        "justify-center"
+    );
+
+    const radarContainer = document.createElement("div");
+    radarContainer.id = "radar-chart";
+    radarContainer.classList.add("w-full", "flex", "justify-center");
+
+    radarSection.append(radarContainer);
+
+    // Add every section
     scrollWrapper.append(bestSection);
     scrollWrapper.append(compareSection);
+    scrollWrapper.append(radarSection);
 
     shell.append(scrollWrapper);
     container.append(shell);
+
+    window.renderBottomRadar = function (bestMatch, comparedNeighborhood) {
+        renderRadarChart(radarContainer, bestMatch, comparedNeighborhood);
+    };
 }

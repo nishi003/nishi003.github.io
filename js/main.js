@@ -81,6 +81,7 @@ function initMainPage(allDataArray) {
     // Render initial cards
     renderBestMatchCard(appData.bestMatch);
     renderCompareCard(null);
+    renderBottomRadar(appData.bestMatch, null);
 
     // Wire up UNSELECT button
     document.getElementById("unselect-button").addEventListener("click", () => {
