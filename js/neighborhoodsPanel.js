@@ -162,7 +162,7 @@ function renderRadarChart(container, bestMatch, comparedNeighborhood, criteria) 
             .attr("points", polygonPoints(r))
             .attr("fill", "none")
             .attr("stroke", "#565656")
-            .attr("stroke-width", 2);
+            .attr("stroke-width", 1.5);
     }
 
     // axis labels
