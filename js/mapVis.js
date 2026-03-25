@@ -235,7 +235,12 @@ class MapVis {
     handleClick(event, d) {
         let vis = this;
         const id = d.properties.id;
+        const bestId = vis.appData.bestMatch?.id;
+
         if (!id || id === -1) return;
+
+        // Best match cannot be selected in compare
+        if (id === bestId) return;
 
         // Toggle off if clicking the same neighbourhood again
         if (vis.selectedId === id) {
