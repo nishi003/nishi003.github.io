@@ -85,7 +85,7 @@
         "avg_rent": 2100,
         "safety": 77,
         "transit_score": 45,
-        "dining_score": 38,
+        "dining_score": 32,
         "green_space_score": 45,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -98,7 +98,7 @@
         "avg_rent": 3200,
         "safety": 91,
         "transit_score": 62,
-        "dining_score": 68,
+        "dining_score": 72,
         "green_space_score": 72,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -150,7 +150,7 @@
         "avg_rent": 3400,
         "safety": 86,
         "transit_score": 82,
-        "dining_score": 90,
+        "dining_score": 89,
         "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -202,7 +202,7 @@
         "avg_rent": 2400,
         "safety": 84,
         "transit_score": 85,
-        "dining_score": 88,
+        "dining_score": 90,
         "green_space_score": 50,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -267,7 +267,7 @@
         "avg_rent": 4300,
         "safety": 72,
         "transit_score": 72,
-        "dining_score": 88,
+        "dining_score": 87,
         "green_space_score": 68,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -332,7 +332,7 @@
         "avg_rent": 2200,
         "safety": 42,
         "transit_score": 92,
-        "dining_score": 85,
+        "dining_score": 84,
         "green_space_score": 42,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -345,7 +345,7 @@
         "avg_rent": 3500,
         "safety": 62,
         "transit_score": 80,
-        "dining_score": 82,
+        "dining_score": 80,
         "green_space_score": 72,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -371,7 +371,7 @@
         "avg_rent": 2600,
         "safety": 95,
         "transit_score": 55,
-        "dining_score": 55,
+        "dining_score": 58,
         "green_space_score": 48,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -397,7 +397,7 @@
         "avg_rent": 2100,
         "safety": 61,
         "transit_score": 90,
-        "dining_score": 78,
+        "dining_score": 86,
         "green_space_score": 38,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -423,7 +423,7 @@
         "avg_rent": 3200,
         "safety": 78,
         "transit_score": 62,
-        "dining_score": 40,
+        "dining_score": 30,
         "green_space_score": 72,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -436,7 +436,7 @@
         "avg_rent": 3100,
         "safety": 72,
         "transit_score": 55,
-        "dining_score": 38,
+        "dining_score": 25,
         "green_space_score": 75,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -449,7 +449,7 @@
         "avg_rent": 3200,
         "safety": 95,
         "transit_score": 68,
-        "dining_score": 62,
+        "dining_score": 58,
         "green_space_score": 68,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -462,7 +462,7 @@
         "avg_rent": 2900,
         "safety": 70,
         "transit_score": 52,
-        "dining_score": 42,
+        "dining_score": 28,
         "green_space_score": 70,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -488,7 +488,7 @@
         "avg_rent": 3000,
         "safety": 93,
         "transit_score": 72,
-        "dining_score": 80,
+        "dining_score": 78,
         "green_space_score": 75,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -501,7 +501,7 @@
         "avg_rent": 4000,
         "safety": 91,
         "transit_score": 82,
-        "dining_score": 88,
+        "dining_score": 90,
         "green_space_score": 58,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -527,7 +527,7 @@
         "avg_rent": 1900,
         "safety": 77,
         "transit_score": 38,
-        "dining_score": 28,
+        "dining_score": 18,
         "green_space_score": 42,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -592,7 +592,7 @@
         "avg_rent": 3850,
         "safety": 98,
         "transit_score": 68,
-        "dining_score": 78,
+        "dining_score": 80,
         "green_space_score": 78,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -605,7 +605,7 @@
         "avg_rent": 3200,
         "safety": 80,
         "transit_score": 78,
-        "dining_score": 78,
+        "dining_score": 84,
         "green_space_score": 58,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -683,7 +683,7 @@
         "avg_rent": 2100,
         "safety": 40,
         "transit_score": 42,
-        "dining_score": 32,
+        "dining_score": 16,
         "green_space_score": 42,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -709,7 +709,7 @@
         "avg_rent": 3300,
         "safety": 50,
         "transit_score": 78,
-        "dining_score": 80,
+        "dining_score": 82,
         "green_space_score": 60,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -735,7 +735,7 @@
         "avg_rent": 3600,
         "safety": 60,
         "transit_score": 75,
-        "dining_score": 75,
+        "dining_score": 85,
         "green_space_score": 58,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -748,7 +748,7 @@
         "avg_rent": 4200,
         "safety": 93,
         "transit_score": 70,
-        "dining_score": 85,
+        "dining_score": 87,
         "green_space_score": 78,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -865,7 +865,7 @@
         "avg_rent": 3500,
         "safety": 58,
         "transit_score": 78,
-        "dining_score": 85,
+        "dining_score": 92,
         "green_space_score": 78,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -930,7 +930,7 @@
         "avg_rent": 3700,
         "safety": 98,
         "transit_score": 72,
-        "dining_score": 80,
+        "dining_score": 78,
         "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -943,7 +943,7 @@
         "avg_rent": 3000,
         "safety": 82,
         "transit_score": 78,
-        "dining_score": 90,
+        "dining_score": 93,
         "green_space_score": 60,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1021,7 +1021,7 @@
         "avg_rent": 4800,
         "safety": 95,
         "transit_score": 72,
-        "dining_score": 75,
+        "dining_score": 85,
         "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1099,7 +1099,7 @@
         "avg_rent": 3300,
         "safety": 48,
         "transit_score": 82,
-        "dining_score": 82,
+        "dining_score": 84,
         "green_space_score": 45,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1125,7 +1125,7 @@
         "avg_rent": 3600,
         "safety": 91,
         "transit_score": 65,
-        "dining_score": 68,
+        "dining_score": 74,
         "green_space_score": 62,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1138,7 +1138,7 @@
         "avg_rent": 4800,
         "safety": 95,
         "transit_score": 65,
-        "dining_score": 58,
+        "dining_score": 68,
         "green_space_score": 72,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1203,7 +1203,7 @@
         "avg_rent": 3200,
         "safety": 93,
         "transit_score": 78,
-        "dining_score": 82,
+        "dining_score": 84,
         "green_space_score": 58,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1294,7 +1294,7 @@
         "avg_rent": 4100,
         "safety": 82,
         "transit_score": 55,
-        "dining_score": 45,
+        "dining_score": 22,
         "green_space_score": 70,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1411,7 +1411,7 @@
         "avg_rent": 4100,
         "safety": 70,
         "transit_score": 72,
-        "dining_score": 88,
+        "dining_score": 87,
         "green_space_score": 60,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1489,7 +1489,7 @@
         "avg_rent": 2800,
         "safety": 72,
         "transit_score": 50,
-        "dining_score": 38,
+        "dining_score": 18,
         "green_space_score": 68,
         "city": "San Francisco",
         "county": "San Francisco"
@@ -1502,7 +1502,7 @@
         "avg_rent": 2700,
         "safety": 72,
         "transit_score": 50,
-        "dining_score": 38,
+        "dining_score": 24,
         "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"

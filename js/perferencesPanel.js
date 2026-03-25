@@ -5,7 +5,7 @@ const sections = [
         criteria: [
             {
                 label: "Maximum average rent (per month)",
-                tooltip: "Based on average listed rents for 2bed/2bath units in the neighborhood.",
+                tooltip: "Based on median listed rents for 1-bedroom units in the neighborhood, aggregated from multiple sources.",
                 type: "max",
                 min: 0,
                 max: 10000,
@@ -21,7 +21,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum safety score",
-                tooltip: "Scored 0–100 based on 2023 SFPD Incident Reports. Combines violent and drug crime rates per 1,000 residents. Lower crime yields a higher score.",
+                tooltip: "Based on 2023 SFPD Incident Reports. Combines violent and drug crime rates per 1,000 residents. Lower crime yields a higher score.",
                 type: "min",
                 min: 0,
                 max: 100,
@@ -37,7 +37,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum transit score",
-                tooltip: "Scored 0–100 based on proximity to buses, subways, and rail.",
+                tooltip: "Based on the Walk Score neighborhood table for San Francisco. Measures access to buses, subways, and rail. Better transit access yields a higher score.",
                 type: "min",
                 min: 0,
                 max: 100,
@@ -53,7 +53,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum dining score",
-                tooltip: "Scored 0–100 based on the density and variety of restaurants, cafés, and bars.",
+                tooltip: "Based on OpenTable, Tripadvisor, Michelin Guide, and Eater SF data. Measures restaurant density, quality, and variety at the neighborhood level. Stronger dining scenes yield higher scores.",
                 type: "min",
                 min: 0,
                 max: 100,
