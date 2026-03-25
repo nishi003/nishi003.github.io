@@ -56,126 +56,128 @@ class MapVis {
     initVis() {
         let vis = this;
 
-        const container = document.getElementById(vis.parentElement);
-        const bounds = container.getBoundingClientRect();
-        vis.margin = { top: 20, right: 20, bottom: 40, left: 20 };
+        requestAnimationFrame(() => {
+            const container = document.getElementById(vis.parentElement);
+            const bounds = container.getBoundingClientRect();
 
-        vis.width = bounds.width - vis.margin.left - vis.margin.right;
-        vis.height = bounds.height - vis.margin.top - vis.margin.bottom;
 
-        // SVG
-        vis.svg = d3.select("#" + vis.parentElement).append("svg")
-            .attr("width", bounds.width)
-            .attr("height", bounds.height);
+            vis.margin = { top: 20, right: 20, bottom: 40, left: 20 };
 
-        // defs: clip path + subtle glow filter
-        const defs = vis.svg.append("defs");
+            vis.width = bounds.width - vis.margin.left - vis.margin.right;
+            vis.height = bounds.height - vis.margin.top - vis.margin.bottom;
 
-        const glow = defs.append("filter")
-            .attr("id", "neighbourhood-glow")
-            .attr("x", "-50%")
-            .attr("y", "-50%")
-            .attr("width", "160%")
-            .attr("height", "160%");
+            console.log(bounds.width, bounds.height);
 
-        glow.append("feGaussianBlur")
-            .attr("stdDeviation", 3.5)
-            .attr("result", "coloredBlur");
+            // SVG
+            vis.svg = d3.select("#" + vis.parentElement).append("svg")
+                .attr("width", bounds.width)
+                .attr("height", bounds.height);
 
-        const merge = glow.append("feMerge");
-        merge.append("feMergeNode").attr("in", "coloredBlur");
-        merge.append("feMergeNode").attr("in", "SourceGraphic");
+            // defs: clip path + subtle glow filter
+            const defs = vis.svg.append("defs");
 
-        // main group - receives zoom transform
-        vis.mapGroup = vis.svg.append("g")
-            .attr("class", "map-group")
-            .attr("transform", `translate(${vis.margin.left}, ${vis.margin.top})`);
+            const glow = defs.append("filter")
+                .attr("id", "neighbourhood-glow")
+                .attr("x", "-50%")
+                .attr("y", "-50%")
+                .attr("width", "160%")
+                .attr("height", "160%");
 
-        // projection - fit the SF GeoJSON into the available space
-        vis.projection = d3.geoMercator()
-            .fitSize([vis.width, vis.height], vis.appData.sfGeoJSON);
-        vis.path = d3.geoPath().projection(vis.projection);
+            glow.append("feGaussianBlur")
+                .attr("stdDeviation", 3.5)
+                .attr("result", "coloredBlur");
 
-        // add title
-        // vis.title = d3.select("#map-title").append("h1")
-        //     .text("test")
+            const merge = glow.append("feMerge");
+            merge.append("feMergeNode").attr("in", "coloredBlur");
+            merge.append("feMergeNode").attr("in", "SourceGraphic");
 
-        // draw base paths
-        // draw all neighbourhood polygons
-        vis.mapGroup.selectAll(".neighbourhood-path")
-            .data(vis.appData.sfGeoJSON.features)
-            .join("path")
-            .attr("d", vis.path)
-            .attr("class", "neighbourhood-path")
-            .style("fill", "var(--inside)")
-            .style("stroke", "var(--border)")
-            .style("stroke-width", "0.1rem")
-            .style("stroke-linejoin", "round")
-            .style("cursor", "pointer")
-            .on("mouseenter", (event, d) => vis.handleMouseEnter(event, d))
-            .on("mouseleave", (event, d) => vis.handleMouseLeave(event, d));
+            // main group - receives zoom transform
+            vis.mapGroup = vis.svg.append("g")
+                .attr("class", "map-group")
+                .attr("transform", `translate(${vis.margin.left}, ${vis.margin.top})`);
 
-        // Glow filter for highlighted neighbourhood
-        // const glow = defs.append("filter")
-        //     .attr("id", "hood-glow")
-        //     .attr("x", "-30%").attr("y", "-30%")
-        //     .attr("width", "160%").attr("height", "160%");
-        // glow.append("feGaussianBlur")
-        //     .attr("stdDeviation", "3")
-        //     .attr("result", "coloredBlur");
-        // const merge = glow.append("feMerge");
-        // merge.append("feMergeNode").attr("in", "coloredBlur");
-        // merge.append("feMergeNode").attr("in", "SourceGraphic");
+            // projection - fit the SF GeoJSON into the available space
+            vis.projection = d3.geoMercator()
+                .fitSize([vis.width, vis.height], vis.appData.sfGeoJSON);
+            vis.path = d3.geoPath().projection(vis.projection);
 
-        // ── NEIGHBOURHOOD LABELS ───────────────────────────
-        // Labels only visible when zoomed in (opacity controlled by zoom handler)
-        // vis.mapGroup.selectAll(".neighbourhood-label")
-        //     .data(vis.appData.sfGeoJSON.features)
-        //     .join("text")
-        //     .attr("class", "neighbourhood-label")
-        //     .attr("transform", d => {
-        //         const [x, y] = vis.path.centroid(d);
-        //         return `translate(${x}, ${y})`;
-        //     })
-        //     .attr("text-anchor", "middle")
-        //     .attr("dominant-baseline", "middle")
-        //     .style("font-size", "10px")
-        //     .style("font-family", "inherit")
-        //     .style("fill", "var(--text)")
-        //     .style("pointer-events", "none")
-        //     .style("opacity", 0)               // hidden until zoomed
-        //     .style("letter-spacing", "0.03em")
-        //     .text(d => d.properties.name);
+            // add title
+            // vis.title = d3.select("#map-title").append("h1")
+            //     .text("test")
 
-        // ── LEGEND ─────────────────────────────────────────
-        // vis._drawLegend();
+            // draw base paths
+            // draw all neighbourhood polygons
+            vis.mapGroup.selectAll(".neighbourhood-path")
+                .data(vis.appData.sfGeoJSON.features)
+                .join("path")
+                .attr("d", vis.path)
+                .attr("class", "neighbourhood-path")
+                .style("fill", "var(--inside)")
+                .style("stroke", "var(--border)")
+                .style("stroke-width", "0.1rem")
+                .style("stroke-linejoin", "round")
+                .style("cursor", "pointer")
+                .on("mouseenter", (event, d) => vis.handleMouseEnter(event, d))
+                .on("mouseleave", (event, d) => vis.handleMouseLeave(event, d));
 
-        // ── ZOOM HINT ──────────────────────────────────────
-        // vis.svg.append("text")
-        //     .attr("class", "zoom-hint")
-        //     .attr("x", vis.width + vis.margin.left)
-        //     .attr("y", vis.height + vis.margin.top)
-        //     .attr("text-anchor", "end")
-        //     .attr("dominant-baseline", "auto")
-        //     .style("font-size", "10px")
-        //     .style("fill", "rgba(255,255,255,0.25)")
-        //     .style("font-family", "inherit")
-        //     .style("letter-spacing", "0.08em")
-        //     .text("SCROLL TO ZOOM · DOUBLE-CLICK TO RESET");
+            // Glow filter for highlighted neighbourhood
+            // const glow = defs.append("filter")
+            //     .attr("id", "hood-glow")
+            //     .attr("x", "-30%").attr("y", "-30%")
+            //     .attr("width", "160%").attr("height", "160%");
+            // glow.append("feGaussianBlur")
+            //     .attr("stdDeviation", "3")
+            //     .attr("result", "coloredBlur");
+            // const merge = glow.append("feMerge");
+            // merge.append("feMergeNode").attr("in", "coloredBlur");
+            // merge.append("feMergeNode").attr("in", "SourceGraphic");
 
-        vis.wrangleData();
+            // ── NEIGHBOURHOOD LABELS ───────────────────────────
+            // Labels only visible when zoomed in (opacity controlled by zoom handler)
+            // vis.mapGroup.selectAll(".neighbourhood-label")
+            //     .data(vis.appData.sfGeoJSON.features)
+            //     .join("text")
+            //     .attr("class", "neighbourhood-label")
+            //     .attr("transform", d => {
+            //         const [x, y] = vis.path.centroid(d);
+            //         return `translate(${x}, ${y})`;
+            //     })
+            //     .attr("text-anchor", "middle")
+            //     .attr("dominant-baseline", "middle")
+            //     .style("font-size", "10px")
+            //     .style("font-family", "inherit")
+            //     .style("fill", "var(--text)")
+            //     .style("pointer-events", "none")
+            //     .style("opacity", 0)               // hidden until zoomed
+            //     .style("letter-spacing", "0.03em")
+            //     .text(d => d.properties.name);
+
+            // ── LEGEND ─────────────────────────────────────────
+            // vis._drawLegend();
+
+            // ── ZOOM HINT ──────────────────────────────────────
+            // vis.svg.append("text")
+            //     .attr("class", "zoom-hint")
+            //     .attr("x", vis.width + vis.margin.left)
+            //     .attr("y", vis.height + vis.margin.top)
+            //     .attr("text-anchor", "end")
+            //     .attr("dominant-baseline", "auto")
+            //     .style("font-size", "10px")
+            //     .style("fill", "rgba(255,255,255,0.25)")
+            //     .style("font-family", "inherit")
+            //     .style("letter-spacing", "0.08em")
+            //     .text("SCROLL TO ZOOM · DOUBLE-CLICK TO RESET");
+
+            vis.wrangleData();
+        });
     }
 
     // ── Called whenever filters change ──────────────────────
     wrangleData() {
         let vis = this;
 
-        // Pull current criteria from the global filter state
-        // (set by CriteriaPanel via window.currentCriteria or passed directly)
-
-        // Determine which neighbourhood IDs pass the filter
         vis.matchingIds = new Set(
-            getFilteredNeighbourhoods(vis.appData.neighbourhoods, vis.criteria)
+            getFilteredNeighborhoods(vis.appData.neighborhoods, vis.appData.criteria)
                 .map(h => h.id)
         );
 

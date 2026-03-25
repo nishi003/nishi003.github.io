@@ -1,13 +1,6 @@
-/* * * * * * * * * * * * * *
-*           MAIN           *
-* * * * * * * * * * * * * */
-
 let myPreferences, myBestNeighborhood, myCurrentNeighborhood, myMapVis;
 
 function updateAllVisualizations() {
-    if (myPreferences) myPreferences.wrangleData();
-    if (myBestNeighborhood) myBestNeighborhood.wrangleData();
-    if (myCurrentNeighborhood) myCurrentNeighborhood.wrangleData();
     if (myMapVis) myMapVis.wrangleData();
 }
 
@@ -26,10 +19,8 @@ function getFilteredNeighborhoods(neighborhoods, criteria) {
 
 function scoreNeighborhood(h) {
     const RENT_MIN = 1500, RENT_MAX = 6000;
-
     const affordability = 1 - (h.avg_rent - RENT_MIN) / (RENT_MAX - RENT_MIN);
     const rentScore = Math.max(0, Math.min(1, affordability));
-
     return (
         (h.safety / 100) * 20 +
         (h.transit_score / 100) * 20 +
@@ -39,7 +30,6 @@ function scoreNeighborhood(h) {
     );
 }
 
-// SF neighborhood boundaries — official DataSF GeoJSON
 const SF_HOODS_URL = "../data/SF_Find_Neighborhoods_20260318.geojson";
 const NEIGHBORHOOD_URL = "../data/neighborhoods.js";
 
@@ -55,84 +45,52 @@ function initMainPage(allDataArray) {
     sfGeoJSON.features.forEach(feature => {
         const geoName = (feature.properties.name || feature.properties.neighborhood || "").trim();
         const match = criteriaByName.get(geoName.toLowerCase());
-        feature.properties = { ...feature.properties, ...match };
+        if (match) feature.properties = { ...feature.properties, ...match };
     });
 
     const neighborhoods = rawNeighborhoods;
-    const rentExtent = d3.extent(neighborhoods, d => d.avg_rent);
-    const safetyExtent = d3.extent(neighborhoods, d => d.safety);
-    const transitExtent = d3.extent(neighborhoods, d => d.transit_score);
-    const diningExtent = d3.extent(neighborhoods, d => d.dining_score);
-    const greenExtent = d3.extent(neighborhoods, d => d.green_space_score);
 
-    // Compute initial best match
-    const bestMatch = neighborhoods.reduce((best, n) => {
-        const s = scoreNeighborhood(n);
-        return (!best || s > scoreNeighborhood(best)) ? n : best;
-    }, null);
-    console.log(bestMatch);
-
-    // Shared app data
     const appData = {
         sfGeoJSON,
         neighborhoods,
-        rentExtent,
-        safetyExtent,
-        transitExtent,
-        diningExtent,
-        greenExtent,
-
-        // State owned by main.js
-        bestMatch: { ...bestMatch, matchScore: Math.round(scoreNeighborhood(bestMatch)) },
+        criteria: {
+            rentMax: 10000,
+            safetyMin: 0,
+            transitMin: 0,
+            diningMin: 0,
+            greenMin: 0,
+        },
+        bestMatch: null,
         comparedNeighborhood: null,
-
-        // Callbacks fired by NeighborhoodPanel — main.js reacts here
-        onReset() {
-            // Reset preferences panel sliders to defaults
-            if (myPreferences) myPreferences.resetToDefaults();
-
-            // Recompute best match from full unfiltered list
-            const best = neighborhoods.reduce((b, n) =>
-                (!b || scoreNeighborhood(n) > scoreNeighborhood(b)) ? n : b, null);
-            appData.bestMatch = best
-                ? { ...best, matchScore: Math.round(scoreNeighborhood(best)) }
-                : null;
-            appData.comparedNeighborhood = null;
-
-            updateAllVisualizations();
-        },
-
-        onCompare(neighborhood) {
-            appData.comparedNeighborhood = neighborhood;
-            // Map can highlight the compared neighborhood if desired
-            if (myMapVis) myMapVis.wrangleData();
-        },
     };
 
-    // ── Instantiate visualizations ──────────────────────────────────────────
+    // Compute initial best match
+    const best = neighborhoods.reduce((b, n) =>
+        (!b || scoreNeighborhood(n) > scoreNeighborhood(b)) ? n : b, null);
+    appData.bestMatch = best
+        ? { ...best, matchScore: Math.round(scoreNeighborhood(best)) }
+        : null;
+
+    // Instantiate visualizations
     myMapVis = new MapVis("map-container", appData);
-    myCriteria = new CriteriaPanel("criteria-container", appData);
-    myNeighborhood = new NeighborhoodPanel("results-panel", appData);
+
+    // Build panels
+    buildPreferencesPanel("preferences-panel", sections);
+    buildNeighborhoodsPanel("neighborhoods-panel");
 }
 
-
-/**
- * Call this from CriteriaPanel whenever a slider changes.
- * Recomputes bestMatch from the currently filtered set and propagates.
- *
- * @param {object} activeCriteria  — { rentMin, rentMax, safetyMin, enjoyMin, … }
- */
 function onCriteriaChanged(activeCriteria) {
-    if (!myNeighborhood) return;
+    if (!myMapVis) return;
+
+    myMapVis.appData.criteria = activeCriteria;
 
     const filtered = getFilteredNeighborhoods(
-        myNeighborhood.appData.neighborhoods,
+        myMapVis.appData.neighborhoods,
         activeCriteria
     );
 
-    const best = filtered[0] || null;
-    myNeighborhood.appData.bestMatch = best
-        ? { ...best, matchScore: Math.round(scoreNeighborhood(best)) }
+    myMapVis.appData.bestMatch = filtered[0]
+        ? { ...filtered[0], matchScore: Math.round(scoreNeighborhood(filtered[0])) }
         : null;
 
     updateAllVisualizations();

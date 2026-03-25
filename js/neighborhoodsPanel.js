@@ -1,4 +1,4 @@
-function buildPanel(containerId) {
+function buildNeighborhoodsPanel(containerId) {
     const container = document.getElementById(containerId);
 
     // Best neighborhood section
@@ -104,5 +104,3 @@ function buildPanel(containerId) {
     container.append(bestSection);
     container.append(compareSection);
 }
-
-buildPanel("neighborhoods-panel");

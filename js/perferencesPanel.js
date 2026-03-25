@@ -81,6 +81,16 @@ const sections = [
     },
 ];
 
+function getCurrentCriteria() {
+    return {
+        rentMax: parseFloat(document.querySelector('[data-id="housing"] .range')?.value ?? 10000),
+        safetyMin: parseFloat(document.querySelector('[data-id="safety"] .range')?.value ?? 0),
+        transitMin: parseFloat(document.querySelector('[data-id="transportation"] .range')?.value ?? 0),
+        diningMin: parseFloat(document.querySelector('[data-id="food"] .range')?.value ?? 0),
+        greenMin: parseFloat(document.querySelector('[data-id="parks"] .range')?.value ?? 0),
+    };
+}
+
 function createTooltip() {
     const tip = document.createElement("div");
     tip.id = "tooltip";
@@ -106,7 +116,7 @@ function createTooltip() {
 
 const tooltip = createTooltip();
 
-function buildPanel(containerId, sections) {
+function buildPreferencesPanel(containerId, sections) {
     const container = document.getElementById(containerId);
 
     // Header
@@ -217,6 +227,7 @@ function buildPanel(containerId, sections) {
                     slider.value = currentVal;
                     display.value = c.format(currentVal);
                     updateFill();
+                    onCriteriaChanged(getCurrentCriteria());
                 } else {
                     display.value = c.format(currentVal); // revert if invalid
                 }
@@ -229,6 +240,7 @@ function buildPanel(containerId, sections) {
                 currentVal = slider.value;
                 display.value = c.format(currentVal);
                 updateFill();
+                onCriteriaChanged(getCurrentCriteria());
             });
 
             sliderRow.appendChild(slider);
@@ -250,5 +262,3 @@ function resetToDefaults(section) {
         el.value = el.defaultValue;
     });
 }
-
-buildPanel("preferences-panel", sections);
