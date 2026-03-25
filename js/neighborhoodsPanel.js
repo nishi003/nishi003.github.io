@@ -51,7 +51,6 @@ function buildNeighborhoodsPanel(containerId) {
             slider.value = c.defaultVal;
             display.value = c.format(c.defaultVal);
 
-            // Update fill
             const pct = ((c.defaultVal - c.min) / (c.max - c.min)) * 100;
             if (c.type === "max") {
                 slider.style.background = `linear-gradient(to right, #ffffff ${pct}%, #333333 ${pct}%)`;

@@ -40,17 +40,38 @@ class MapVis {
     }
 
     handleMouseEnter(event, d) {
-        d3.select(event.currentTarget).raise()
-            .style("filter", "url(#neighbourhood-glow)")
-            .style("stroke", "#faf9f6")
-            .style("stroke-width", "3px");
+        const id = d.properties.id;
+        const isBest = id === this.appData.bestMatch?.id;
+        if (isBest) {
+            d3.select(event.currentTarget)
+                .style("filter", "url(#best-glow)")
+                .style("stroke", "#009951")
+                .style("stroke-width", "3px")
+                .style("fill", "rgba(0, 153, 81, 0.3)");
+        } else {
+            d3.select(event.currentTarget).raise()
+                .style("filter", "url(#neighbourhood-glow)")
+                .style("stroke", "#faf9f6")
+                .style("stroke-width", "3px");
+        }
     }
 
     handleMouseLeave(event, d) {
-        d3.select(event.currentTarget)
-            .style("filter", null)
-            .style("stroke", "var(--border)")
-            .style("stroke-width", "1px");
+        const id = d.properties.id;
+        const isBest = id === this.appData.bestMatch?.id;
+
+        if (isBest) {
+            d3.select(event.currentTarget)
+                .style("filter", "url(#best-glow)")
+                .style("stroke", "#009951")
+                .style("stroke-width", "2px")
+                .style("fill", "rgba(0, 153, 81, 0.3)");
+        } else {
+            d3.select(event.currentTarget)
+                .style("filter", null)
+                .style("stroke", "var(--border)")
+                .style("stroke-width", "1px");
+        }
     }
 
     initVis() {
@@ -83,8 +104,24 @@ class MapVis {
                 .attr("result", "coloredBlur");
 
             const merge = glow.append("feMerge");
+
             merge.append("feMergeNode").attr("in", "coloredBlur");
             merge.append("feMergeNode").attr("in", "SourceGraphic");
+
+            const bestGlow = defs.append("filter")
+                .attr("id", "best-glow")
+                .attr("x", "-50%")
+                .attr("y", "-50%")
+                .attr("width", "160%")
+                .attr("height", "160%");
+
+            bestGlow.append("feGaussianBlur")
+                .attr("stdDeviation", 4)
+                .attr("result", "coloredBlur");
+
+            const bestMerge = bestGlow.append("feMerge");
+            bestMerge.append("feMergeNode").attr("in", "coloredBlur");
+            bestMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
             // main group - receives zoom transform
             vis.mapGroup = vis.svg.append("g")
@@ -165,7 +202,8 @@ class MapVis {
     updateVis() {
         let vis = this;
 
-        // ── Update fill + opacity per neighbourhood ─────────
+        const bestId = vis.appData.bestMatch?.id;
+
         vis.mapGroup.selectAll(".neighbourhood-path")
             .each(function (d) {
                 const props = d.properties;
@@ -173,23 +211,28 @@ class MapVis {
                 const isMatch = vis.matchingIds.has(id);
                 const isNoData = id === undefined || id === -1;
                 const isHighlit = id === vis.highlightedId;
+                const isBest = id === bestId;
 
                 const path = d3.select(this);
 
                 if (isNoData) {
-                    // No criteria data (e.g. Presidio National Park)
                     path.style("fill", "rgba(255,255,255,0.03)")
                         .style("opacity", 0.4)
                         .style("filter", null);
+                } else if (isBest) {
+                    path.style("fill", "rgba(0, 153, 81, 0.3)")
+                        .style("opacity", 1)
+                        .style("stroke", "#009951")
+                        .style("stroke-width", "2px")
+                        .style("filter", "url(#best-glow)")
+                        .raise();
                 } else if (isMatch) {
-                    // Passing neighbourhood — bright, full opacity
                     path.style("fill", "var(--inside)")
                         .style("opacity", 1)
-                        .style("filter", isHighlit ? "url(#hood-glow)" : null)
+                        .style("filter", isHighlit ? "url(#neighbourhood-glow)" : null)
                         .style("stroke", isHighlit ? "#ffffff" : "var(--border)")
                         .style("stroke-width", isHighlit ? "3px" : "1px");
                 } else {
-                    // Failing neighbourhood — dim significantly
                     path.style("fill", "rgba(255,255,255,0.04)")
                         .style("opacity", 0.5)
                         .style("filter", null)

@@ -1236,7 +1236,7 @@
         "name": "Presidio National Park",
         "lat": 37.799,
         "lon": -122.4662,
-        "avg_rent": 0,
+        "avg_rent": 4700,
         "safety": 88,
         "enjoyability": 70,
         "transit_score": 45,
