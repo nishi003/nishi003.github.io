@@ -112,7 +112,8 @@ function renderNeighborhoodCard(neigborhood, isBestMatch) {
     return cardContainer;
 }
 
-function renderRadarChart(container, bestMatch, comparedNeighborhood) {
+// criteria is now a proper parameter
+function renderRadarChart(container, bestMatch, comparedNeighborhood, criteria) {
     container.innerHTML = "";
 
     const width = 300;
@@ -161,7 +162,7 @@ function renderRadarChart(container, bestMatch, comparedNeighborhood) {
             .attr("points", polygonPoints(r))
             .attr("fill", "none")
             .attr("stroke", "#565656")
-            .attr("stroke-width", 1);
+            .attr("stroke-width", 2);
     }
 
     // axis labels
@@ -171,18 +172,10 @@ function renderRadarChart(container, bestMatch, comparedNeighborhood) {
         let y = cy + Math.sin(axis.angle) * labelRadius;
 
         let anchor = "middle";
-        if (axis.key === "transit") {
-            anchor = "start";
-        }
-        if (axis.key === "green") {
-            anchor = "end";
-        }
-        if (axis.key === "safety") {
-            y -= 4;
-        }
-        if (axis.key === "dining") {
-            y += 4;
-        }
+        if (axis.key === "transit") anchor = "start";
+        if (axis.key === "green") anchor = "end";
+        if (axis.key === "safety") y -= 4;
+        if (axis.key === "dining") y += 4;
 
         g.append("text")
             .attr("x", x)
@@ -198,22 +191,66 @@ function renderRadarChart(container, bestMatch, comparedNeighborhood) {
 
     function drawShape(metrics, fill, stroke) {
         if (!metrics) return;
-
         const points = axes.map(axis => pointFor(axis, metrics[axis.key])).join(" ");
-
         g.append("polygon")
             .attr("points", points)
             .attr("fill", fill)
             .attr("fill-opacity", 0.65)
             .attr("stroke", stroke)
-            .attr("stroke-width", 1.5);
+            .attr("stroke-width", 2);
     }
+
+    // Convert criteria to radar metrics
+    const criteriaMetrics = criteria ? {
+        safety: criteria.safetyMin,
+        transit: criteria.transitMin,
+        dining: criteria.diningMin,
+        green: criteria.greenMin,
+        rent: Math.max(0, Math.min(100, (1 - (criteria.rentMax - 1500) / (6000 - 1500)) * 100)),
+    } : null;
 
     const bestMetrics = getRadarMetrics(bestMatch);
     const compareMetrics = getRadarMetrics(comparedNeighborhood);
 
+
     drawShape(bestMetrics, "rgba(0, 153, 81, 0.7)", "#00A55A");
+    drawShape(criteriaMetrics, "rgba(255, 200, 0, 0.7)", "#FFC800");
     drawShape(compareMetrics, "rgba(0, 136, 255, 0.7)", "#0088FF");
+
+    const legendItems = [
+        { label: "Best", color: "#00C16A", opacity: 0.3 },
+        { label: "Selected", color: "#0088FF", opacity: 0.3 },
+        { label: "Preferences", color: "#F4C20D", opacity: 0.3 },
+    ];
+
+    const legend = svg.append("g")
+        .attr("transform", `translate(6, 2)`);
+
+    legendItems.forEach((item, i) => {
+        const row = legend.append("g")
+            .attr("transform", `translate(0, ${i * 22})`);
+
+        row.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("rx", 2)
+            .attr("fill", item.color)
+            .attr("fill-opacity", item.opacity)
+            .attr("stroke", item.color)
+            .attr("stroke-width", 1.5);
+
+        row.append("text")
+            .attr("x", 18)
+            .attr("y", 6)
+            .attr("fill", "white")
+            .attr("font-size", "10px")
+            .attr("font-family", "Mulish, sans-serif")
+            .attr("font-weight", 500)
+            .attr("dominant-baseline", "middle")
+            .text(item.label);
+    });
 }
 
 function buildNeighborhoodsPanel(containerId) {
@@ -223,7 +260,7 @@ function buildNeighborhoodsPanel(containerId) {
     shell.classList.add("flex", "flex-col", "flex-1", "min-h-0", "p-[28px]", "overflow-hidden");
 
     const scrollWrapper = document.createElement("div");
-    scrollWrapper.id = "scroll-wrapper"
+    scrollWrapper.id = "scroll-wrapper";
     scrollWrapper.classList.add("flex", "flex-col", "gap-[24px]", "overflow-y-auto", "flex-1", "min-h-0");
 
     // Best neighborhood section
@@ -245,22 +282,10 @@ function buildNeighborhoodsPanel(containerId) {
     resetButton.id = "reset-button";
     resetButton.textContent = "RESET";
     resetButton.classList.add(
-        "px-[12px]",
-        "py-[7px]",
-        "rounded-[10px]",
-        "border",
-        "border-panel",
-        "text-xs",
-        "font-semibold",
-        "font-mulish",
-        "text-white",
-        "bg-[#171717]",
-        "transition-all",
-        "duration-200",
-        "hover:bg-white",
-        "hover:font-bold",
-        "hover:border-[#C8C8C8]",
-        "cursor-pointer",
+        "px-[12px]", "py-[7px]", "rounded-[10px]", "border", "border-panel",
+        "text-xs", "font-semibold", "font-mulish", "text-white", "bg-[#171717]",
+        "transition-all", "duration-200", "hover:bg-white", "hover:font-bold",
+        "hover:border-[#C8C8C8]", "cursor-pointer",
     );
 
     resetButton.addEventListener("click", () => {
@@ -309,7 +334,6 @@ function buildNeighborhoodsPanel(containerId) {
     bestHeader.append(bestTitleWrap);
     bestHeader.append(bestSubtitleWrap);
 
-    // Best neighborhood card
     bestSection.append(bestHeader);
 
     let bestCardEl = renderNeighborhoodCard(null, true);
@@ -319,7 +343,6 @@ function buildNeighborhoodsPanel(containerId) {
         const newCard = renderNeighborhoodCard(match, true);
         bestSection.replaceChild(newCard, bestCardEl);
         bestCardEl = newCard;
-
         window.renderBottomRadar(match, myMapVis?.appData?.comparedNeighborhood ?? null);
     };
 
@@ -347,7 +370,6 @@ function buildNeighborhoodsPanel(containerId) {
     compareHeader.append(compareTitleWrap);
     compareHeader.append(compareSubtitleWrap);
 
-    // Compare Neighborhood Card
     compareSection.append(compareHeader);
 
     let compareCardEl = renderNeighborhoodCard(null, false);
@@ -357,21 +379,13 @@ function buildNeighborhoodsPanel(containerId) {
         const newCard = renderNeighborhoodCard(neighborhood, false);
         compareSection.replaceChild(newCard, compareCardEl);
         compareCardEl = newCard;
-
         window.renderBottomRadar(myMapVis?.appData?.bestMatch ?? null, neighborhood);
     };
 
     // Radar Chart Section
     const radarSection = document.createElement("div");
     radarSection.id = "radar-section";
-    radarSection.classList.add(
-        "w-[300px]",
-        "h-fit",
-        "flex",
-        "flex-col",
-        "items-center",
-        "justify-center"
-    );
+    radarSection.classList.add("w-[300px]", "h-fit", "flex", "flex-col", "items-center", "justify-center");
 
     const radarContainer = document.createElement("div");
     radarContainer.id = "radar-chart";
@@ -379,7 +393,6 @@ function buildNeighborhoodsPanel(containerId) {
 
     radarSection.append(radarContainer);
 
-    // Add every section
     scrollWrapper.append(bestSection);
     scrollWrapper.append(compareSection);
     scrollWrapper.append(radarSection);
@@ -387,7 +400,9 @@ function buildNeighborhoodsPanel(containerId) {
     shell.append(scrollWrapper);
     container.append(shell);
 
+    // Defined once, at the bottom, never overwritten
     window.renderBottomRadar = function (bestMatch, comparedNeighborhood) {
-        renderRadarChart(radarContainer, bestMatch, comparedNeighborhood);
+        const criteria = myMapVis?.appData?.criteria ?? null;
+        renderRadarChart(radarContainer, bestMatch, comparedNeighborhood, criteria);
     };
 }
