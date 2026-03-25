@@ -47,8 +47,8 @@ function scoreNeighborhood(h, criteria = { rentMax: 10000, safetyMin: 0, transit
     return (raw / 125) * 100;
 }
 
-const SF_HOODS_URL = "../data/SF_Find_Neighborhoods_20260318.geojson";
-const NEIGHBORHOOD_URL = "../data/neighborhoods.js";
+const SF_HOODS_URL = "./data/SF_Find_Neighborhoods_20260318.geojson";
+const NEIGHBORHOOD_URL = "./data/neighborhoods.js";
 
 Promise.all([d3.json(SF_HOODS_URL), d3.json(NEIGHBORHOOD_URL)])
     .then(data => initMainPage(data))
