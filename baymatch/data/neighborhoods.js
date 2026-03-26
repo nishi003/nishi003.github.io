@@ -86,7 +86,7 @@
         "safety": 77,
         "transit_score": 45,
         "dining_score": 32,
-        "green_space_score": 45,
+        "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -99,7 +99,7 @@
         "safety": 91,
         "transit_score": 62,
         "dining_score": 72,
-        "green_space_score": 72,
+        "green_space_score": 56,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -151,7 +151,7 @@
         "safety": 86,
         "transit_score": 82,
         "dining_score": 89,
-        "green_space_score": 65,
+        "green_space_score": 51,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -203,7 +203,7 @@
         "safety": 84,
         "transit_score": 85,
         "dining_score": 90,
-        "green_space_score": 50,
+        "green_space_score": 23,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -372,7 +372,7 @@
         "safety": 95,
         "transit_score": 55,
         "dining_score": 58,
-        "green_space_score": 48,
+        "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -398,7 +398,7 @@
         "safety": 61,
         "transit_score": 90,
         "dining_score": 86,
-        "green_space_score": 38,
+        "green_space_score": 40,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -450,7 +450,7 @@
         "safety": 95,
         "transit_score": 68,
         "dining_score": 58,
-        "green_space_score": 68,
+        "green_space_score": 56,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -476,7 +476,7 @@
         "safety": null,
         "transit_score": null,
         "dining_score": null,
-        "green_space_score": null,
+        "green_space_score": 95,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -489,7 +489,7 @@
         "safety": 93,
         "transit_score": 72,
         "dining_score": 78,
-        "green_space_score": 75,
+        "green_space_score": 54,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -502,7 +502,7 @@
         "safety": 91,
         "transit_score": 82,
         "dining_score": 90,
-        "green_space_score": 58,
+        "green_space_score": 41,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -528,7 +528,7 @@
         "safety": 77,
         "transit_score": 38,
         "dining_score": 18,
-        "green_space_score": 42,
+        "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -554,7 +554,7 @@
         "safety": 98,
         "transit_score": 55,
         "dining_score": 48,
-        "green_space_score": 52,
+        "green_space_score": 41,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -580,7 +580,7 @@
         "safety": 98,
         "transit_score": 72,
         "dining_score": 82,
-        "green_space_score": 72,
+        "green_space_score": 37,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -593,7 +593,7 @@
         "safety": 98,
         "transit_score": 68,
         "dining_score": 80,
-        "green_space_score": 78,
+        "green_space_score": 48,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -606,7 +606,7 @@
         "safety": 80,
         "transit_score": 78,
         "dining_score": 84,
-        "green_space_score": 58,
+        "green_space_score": 26,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -645,7 +645,7 @@
         "safety": 91,
         "transit_score": 48,
         "dining_score": 42,
-        "green_space_score": 68,
+        "green_space_score": 91,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -671,7 +671,7 @@
         "safety": 78,
         "transit_score": 48,
         "dining_score": 38,
-        "green_space_score": 88,
+        "green_space_score": 51,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -697,7 +697,7 @@
         "safety": 93,
         "transit_score": 68,
         "dining_score": 58,
-        "green_space_score": 60,
+        "green_space_score": 30,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -723,7 +723,7 @@
         "safety": 48,
         "transit_score": 80,
         "dining_score": 78,
-        "green_space_score": 50,
+        "green_space_score": 20,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -736,7 +736,7 @@
         "safety": 60,
         "transit_score": 75,
         "dining_score": 85,
-        "green_space_score": 58,
+        "green_space_score": 47,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -749,7 +749,7 @@
         "safety": 93,
         "transit_score": 70,
         "dining_score": 87,
-        "green_space_score": 78,
+        "green_space_score": 65,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -762,7 +762,7 @@
         "safety": 45,
         "transit_score": 48,
         "dining_score": 38,
-        "green_space_score": 78,
+        "green_space_score": 66,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -775,7 +775,7 @@
         "safety": 98,
         "transit_score": 52,
         "dining_score": 40,
-        "green_space_score": 55,
+        "green_space_score": 41,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -788,7 +788,7 @@
         "safety": 98,
         "transit_score": 50,
         "dining_score": 38,
-        "green_space_score": 60,
+        "green_space_score": 41,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -840,7 +840,7 @@
         "safety": 70,
         "transit_score": 80,
         "dining_score": 95,
-        "green_space_score": 72,
+        "green_space_score": 47,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -853,7 +853,7 @@
         "safety": 86,
         "transit_score": 72,
         "dining_score": 65,
-        "green_space_score": 55,
+        "green_space_score": 48,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -866,7 +866,7 @@
         "safety": 58,
         "transit_score": 78,
         "dining_score": 92,
-        "green_space_score": 78,
+        "green_space_score": 47,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -879,7 +879,7 @@
         "safety": 52,
         "transit_score": 52,
         "dining_score": 45,
-        "green_space_score": 50,
+        "green_space_score": 47,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -918,7 +918,7 @@
         "safety": 86,
         "transit_score": 82,
         "dining_score": 80,
-        "green_space_score": 48,
+        "green_space_score": 20,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -931,7 +931,7 @@
         "safety": 98,
         "transit_score": 72,
         "dining_score": 78,
-        "green_space_score": 65,
+        "green_space_score": 39,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -944,7 +944,7 @@
         "safety": 82,
         "transit_score": 78,
         "dining_score": 93,
-        "green_space_score": 60,
+        "green_space_score": 33,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -970,7 +970,7 @@
         "safety": 98,
         "transit_score": 48,
         "dining_score": 40,
-        "green_space_score": 50,
+        "green_space_score": 41,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -983,7 +983,7 @@
         "safety": 91,
         "transit_score": 50,
         "dining_score": 48,
-        "green_space_score": 45,
+        "green_space_score": 48,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -996,7 +996,7 @@
         "safety": 98,
         "transit_score": 65,
         "dining_score": 72,
-        "green_space_score": 75,
+        "green_space_score": 72,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1009,7 +1009,7 @@
         "safety": 98,
         "transit_score": 60,
         "dining_score": 65,
-        "green_space_score": 80,
+        "green_space_score": 74,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1022,7 +1022,7 @@
         "safety": 95,
         "transit_score": 72,
         "dining_score": 85,
-        "green_space_score": 65,
+        "green_space_score": 47,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1061,7 +1061,7 @@
         "safety": 98,
         "transit_score": 58,
         "dining_score": 50,
-        "green_space_score": 72,
+        "green_space_score": 74,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1113,7 +1113,7 @@
         "safety": 89,
         "transit_score": 50,
         "dining_score": 45,
-        "green_space_score": 45,
+        "green_space_score": 60,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1126,7 +1126,7 @@
         "safety": 91,
         "transit_score": 65,
         "dining_score": 74,
-        "green_space_score": 62,
+        "green_space_score": 45,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1139,7 +1139,7 @@
         "safety": 95,
         "transit_score": 65,
         "dining_score": 68,
-        "green_space_score": 72,
+        "green_space_score": 32,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1152,7 +1152,7 @@
         "safety": null,
         "transit_score": null,
         "dining_score": null,
-        "green_space_score": null,
+        "green_space_score": 66,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1165,7 +1165,7 @@
         "safety": 100,
         "transit_score": 50,
         "dining_score": 35,
-        "green_space_score": 82,
+        "green_space_score": 66,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1204,7 +1204,7 @@
         "safety": 93,
         "transit_score": 78,
         "dining_score": 84,
-        "green_space_score": 58,
+        "green_space_score": 33,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1217,7 +1217,7 @@
         "safety": 100,
         "transit_score": 48,
         "dining_score": 45,
-        "green_space_score": 85,
+        "green_space_score": 53,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1269,7 +1269,7 @@
         "safety": 61,
         "transit_score": 78,
         "dining_score": 72,
-        "green_space_score": 55,
+        "green_space_score": 40,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1282,7 +1282,7 @@
         "safety": 20,
         "transit_score": 85,
         "dining_score": 80,
-        "green_space_score": 42,
+        "green_space_score": 24,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1386,7 +1386,7 @@
         "safety": 0,
         "transit_score": 88,
         "dining_score": 65,
-        "green_space_score": 30,
+        "green_space_score": 35,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1438,7 +1438,7 @@
         "safety": 86,
         "transit_score": 75,
         "dining_score": 82,
-        "green_space_score": 68,
+        "green_space_score": 51,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1451,7 +1451,7 @@
         "safety": 91,
         "transit_score": 45,
         "dining_score": 38,
-        "green_space_score": 48,
+        "green_space_score": 61,
         "city": "San Francisco",
         "county": "San Francisco"
     },
@@ -1477,7 +1477,7 @@
         "safety": 84,
         "transit_score": 75,
         "dining_score": 65,
-        "green_space_score": 55,
+        "green_space_score": 43,
         "city": "San Francisco",
         "county": "San Francisco"
     },

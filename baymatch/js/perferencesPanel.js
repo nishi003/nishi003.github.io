@@ -69,7 +69,7 @@ const sections = [
         criteria: [
             {
                 label: "Minimum green space score",
-                tooltip: "Scored 0–100 based on proximity to parks, trails, and recreational areas.",
+                tooltip: "Based on SF Recreation and Parks Department property data. Scores reflect total parkland acreage within the neighborhood on a log scale. More park acreage yields a higher score.",
                 type: "min",
                 min: 0,
                 max: 100,
