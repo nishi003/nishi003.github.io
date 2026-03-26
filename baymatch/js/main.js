@@ -16,6 +16,7 @@ function getFilteredNeighborhoods(neighborhoods, criteria) {
         )
         .sort((a, b) => scoreNeighborhood(b, criteria) - scoreNeighborhood(a, criteria));
 }
+
 function scoreNeighborhood(h, criteria = { rentMax: 10000, safetyMin: 0, transitMin: 0, diningMin: 0, greenMin: 0 }) {
     if (h.avg_rent === null || h.safety === null || h.transit_score == null || h.dining_score == null || h.green_space_score == null) return 0;
     if (
@@ -26,16 +27,26 @@ function scoreNeighborhood(h, criteria = { rentMax: 10000, safetyMin: 0, transit
         h.green_space_score < criteria.greenMin
     ) return 0;
 
-    const RENT_MIN = 1500, RENT_MAX = 6000;
+    const RENT_MIN = 1700, RENT_MAX = 7500;
     const affordability = 1 - (h.avg_rent - RENT_MIN) / (RENT_MAX - RENT_MIN);
     const rentScore = Math.max(0, Math.min(1, affordability));
 
     // How far above the user's minimum each score is (0–1), penalizes just meeting the bar
-    const safetyMargin = criteria.safetyMin > 0 ? (h.safety - criteria.safetyMin) / (100 - criteria.safetyMin) : h.safety / 100;
-    const transitMargin = criteria.transitMin > 0 ? (h.transit_score - criteria.transitMin) / (100 - criteria.transitMin) : h.transit_score / 100;
-    const diningMargin = criteria.diningMin > 0 ? (h.dining_score - criteria.diningMin) / (100 - criteria.diningMin) : h.dining_score / 100;
-    const greenMargin = criteria.greenMin > 0 ? (h.green_space_score - criteria.greenMin) / (100 - criteria.greenMin) : h.green_space_score / 100;
-    const rentMargin = criteria.rentMax < 10000 ? (criteria.rentMax - h.avg_rent) / (criteria.rentMax - RENT_MIN) : rentScore;
+    const safetyMargin = criteria.safetyMin > 0
+        ? (100 - criteria.safetyMin) > 0 ? (h.safety - criteria.safetyMin) / (100 - criteria.safetyMin) : 1
+        : h.safety / 100;
+    const transitMargin = criteria.transitMin > 0
+        ? (100 - criteria.transitMin) > 0 ? (h.transit_score - criteria.transitMin) / (100 - criteria.transitMin) : 1
+        : h.transit_score / 100;
+    const diningMargin = criteria.diningMin > 0
+        ? (100 - criteria.diningMin) > 0 ? (h.dining_score - criteria.diningMin) / (100 - criteria.diningMin) : 1
+        : h.dining_score / 100;
+    const greenMargin = criteria.greenMin > 0
+        ? (100 - criteria.greenMin) > 0 ? (h.green_space_score - criteria.greenMin) / (100 - criteria.greenMin) : 1
+        : h.green_space_score / 100;
+    const rentMargin = criteria.rentMax < 10000
+        ? (criteria.rentMax - RENT_MIN) > 0 ? (criteria.rentMax - h.avg_rent) / (criteria.rentMax - RENT_MIN) : 1
+        : rentScore;
 
     const raw =
         Math.max(0, safetyMargin) * 25 +
@@ -66,6 +77,10 @@ function initMainPage(allDataArray) {
     });
 
     const neighborhoods = rawNeighborhoods;
+
+    const rents = neighborhoods.filter(h => h.avg_rent !== null).map(h => h.avg_rent);
+    console.log("Max rent:", Math.max(...rents));
+    console.log("Min rent:", Math.min(...rents));
 
     const appData = {
         sfGeoJSON,
